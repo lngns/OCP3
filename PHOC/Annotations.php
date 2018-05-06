@@ -199,7 +199,7 @@ abstract class Annotations
          * @Foo(Bar)
          * @Bar
          * sdfsdf
-         * @Baz(\"Hello\", 42, launchMissiles(89, new Rocket(\$_Runtime)))
+         * @Baz(\"Hello\", 42, launchMissiles(89, new Rocket(\$_Runtime)), M_PI)
          * @Qux(3.14)
          */
         ";
@@ -220,7 +220,8 @@ abstract class Annotations
                     "Arguments" => [
                         0 => "\"Hello\"",
                         1 => "42",
-                        2 => "launchMissiles(89, new Rocket(\$_Runtime))"
+                        2 => "launchMissiles(89, new Rocket(\$_Runtime))",
+                        3 => "M_PI"
                     ]
                 ],
                 3 => [
