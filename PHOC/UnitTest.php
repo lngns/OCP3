@@ -11,7 +11,6 @@ final class UnitTest
 {
     public function __construct($entity)
     {
-        \var_dump($entity);
         if($entity["Type"] !== Annotations::T_CLASS)
         {
             if(Environment::Debug())

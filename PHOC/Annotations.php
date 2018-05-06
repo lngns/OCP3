@@ -98,9 +98,9 @@ abstract class Annotations
                             ++$depth;
                         else if($char === ')' && --$depth === 0)
                             break;
-                        else if($char === ',')
+                        if($char === ',' && $depth === 1)
                         {
-                            $args[] = $argBuffer;
+                            $args[] = trim($argBuffer);
                             $argBuffer = "";
                         }
                         else
@@ -112,7 +112,7 @@ abstract class Annotations
                         break;
                     }
                     if(!empty($argBuffer))
-                        $args[] = $argBuffer;
+                        $args[] = trim($argBuffer);
                     $i = $j;
                 }
                 else
@@ -148,6 +148,90 @@ abstract class Annotations
     /** @PHOC\UnitTest */
     static public function __unittest()
     {
-        echo("HELLO");
+        //One Annotation
+        $code = "
+        /**
+         * @Foo
+         */
+        ";
+        $expected = [
+            "Annotations" => [
+                0 => [
+                    "Class" => "Foo",
+                    "Arguments" => []
+                ]
+            ],
+            "Errors" => []
+        ];
+        assert(self::ParseDocComment($code) === $expected);
+
+        //Multiple Annotations and ignorance of other useless data
+        $code = "
+        /**
+         * @Foo
+         * @Bar
+         * yolo
+         * @Baz
+         */
+        ";
+        $expected = [
+            "Annotations" => [
+                0 => [
+                    "Class" => "Foo",
+                    "Arguments" => []
+                ],
+                1 => [
+                    "Class" => "Bar",
+                    "Arguments" => []
+                ],
+                2 => [
+                    "Class" => "Baz",
+                    "Arguments" => []
+                ]
+            ],
+            "Errors" => []
+        ];
+        assert(self::ParseDocComment($code) === $expected);
+
+        //Argument Parsing
+        $code = "
+        /**
+         * @Foo(Bar)
+         * @Bar
+         * sdfsdf
+         * @Baz(\"Hello\", 42, launchMissiles(89, new Rocket(\$_Runtime)))
+         * @Qux(3.14)
+         */
+        ";
+        $expected = [
+            "Annotations" => [
+                0 => [
+                    "Class" => "Foo",
+                    "Arguments" => [
+                        0 => "Bar"
+                    ]
+                ],
+                1 => [
+                    "Class" => "Bar",
+                    "Arguments" => []
+                ],
+                2 => [
+                    "Class" => "Baz",
+                    "Arguments" => [
+                        0 => "\"Hello\"",
+                        1 => "42",
+                        2 => "launchMissiles(89, new Rocket(\$_Runtime))"
+                    ]
+                ],
+                3 => [
+                    "Class" => "Qux",
+                    "Arguments" => [
+                        0 => "3.14"
+                    ]
+                ]
+            ],
+            "Errors" => []
+        ];
+        assert(self::ParseDocComment($code) === $expected);
     }
 }
