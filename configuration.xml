@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<configuration>
+    <!--<?php die(); ?>-->
+    <logs-file>logs.txt</logs-file>
+    <entry-file>BlogMain.php</entry-file>
+    <resource-directory>local</resource-directory>
+    <default-sql-charset>utf8</default-sql-charset>
+    <default-sql-port>3306</default-sql-port>
+    <environment>
+        <add name="Debug">true</add>
+    </environment>
+</configuration>
