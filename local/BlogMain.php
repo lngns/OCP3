@@ -12,6 +12,5 @@ class BlogMain
     static public function Main()
     {
         echo("Hello World!");
-        echo("<br />Test");
     }
 }

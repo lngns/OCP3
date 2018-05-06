@@ -25,7 +25,9 @@ class Runtime
     }
     static public function Start()
     {
-        spl_autoload_register("\\PHOC\\Runtime::Autoload");
+        \spl_autoload_register("\\PHOC\\Runtime::Autoload");
+        include_once("PHOC" . DIRECTORY_SEPARATOR . "Annotations.php");
+
         $configuration = \simplexml_load_file("." . DIRECTORY_SEPARATOR . "configuration.xml");
         $entryFile = (string) $configuration->{"entry-file"};
         $resourceDir = (string) $configuration->{"resource-directory"};
