@@ -5,7 +5,6 @@
  * Date: 05/06/2018
  * Time: 08:07 AM
  */
-
 namespace PHOC;
 
 abstract class Annotations
@@ -13,7 +12,7 @@ abstract class Annotations
     const T_CLASS = "Class";
     const T_METHOD = "Method";
     const T_FUNCTION = "Function";
-    static private $List = array();
+    static public $List = array();
 
     static public function GetAnnotations($symbol, $type = self::T_CLASS)
     {
@@ -53,8 +52,10 @@ abstract class Annotations
                 throw new \UnexpectedValueException("Class " . $class . " does not exist.");
             $arguments = $annotation["Arguments"];
             $len = count($arguments);
+            //var_dump($arguments);
             for($i = 0; $i < $len; ++$i)
                 $arguments[$i] = eval("return " . $arguments[$i] . ";");
+            //var_dump($arguments);
             array_unshift($arguments, array("Type" => $type, "Symbol" => $symbol));
             $objects[] = new $class(...$arguments);
         }
@@ -66,16 +67,23 @@ abstract class Annotations
     {
         $errors = array();
         $annotations = array();
+        $source = substr($source, 3, strlen($source) - 5);
         $lines = \preg_split("/\r\n|\n|\r/", $source);
         foreach($lines as $line)
         {
+            //echo("Before: "); var_dump($line);
             $line = \ltrim($line);
+            if(empty($line))
+                continue;
+            if($line[0] === '*')
+                $line = \ltrim(\substr($line, 1));
             if($line[0] !== '@')
                 continue;
+            //echo("After: "); var_dump($line);
             $buffer = "";
             $args = array();
             $len = strlen($line);
-            for($i = 0; $i < $len; ++$i)
+            for($i = 1; $i < $len; ++$i)
             {
                 $char = $line[$i];
                 if($char === ' ' || $char === '\t' || $char === '\0' || $char === '\0x0B')
@@ -89,7 +97,7 @@ abstract class Annotations
                         $char = $line[$j];
                         if($char === '(')
                             ++$depth;
-                        else if($char === ')' && --$depth)
+                        else if($char === ')' && --$depth === 0)
                             break;
                         else if($char === ',')
                         {

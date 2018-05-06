@@ -36,5 +36,8 @@ class Runtime
 
         include_once($resourceDir . DIRECTORY_SEPARATOR . $entryFile);
         \BlogMain::Main();
+
+        Annotations::GetAnnotations("\\BlogMain", Annotations::T_CLASS);
+        var_dump(Annotations::$List);
     }
 }
