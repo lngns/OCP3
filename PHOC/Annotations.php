@@ -62,7 +62,6 @@ abstract class Annotations
         self::$List[$type . ':' . $symbol] = $objects;
         return $objects;
     }
-    /* TO TEST */
     static public function ParseDocComment($source)
     {
         $errors = array();
@@ -128,5 +127,27 @@ abstract class Annotations
             "Annotations" => $annotations,
             "Errors" => $errors
         ];
+    }
+    static public function ForceUpdate()
+    {
+        foreach(get_declared_classes() as $symbol)
+        {
+            if($symbol[0] !== '\\')
+                $symbol = '\\' . $symbol;
+            $reflection = new \ReflectionClass($symbol);
+            if(!isset(self::$List["Class:" . $symbol]) && !$reflection->isInternal())
+                Annotations::GetAnnotations($symbol, self::T_CLASS);
+        }
+        foreach(get_defined_functions()["user"] as $symbol)
+        {
+            if(!isset(self::$List["Function:" . $symbol]))
+                Annotations::GetAnnotations($symbol, self::T_FUNCTION);
+        }
+    }
+
+    /** @PHOC\UnitTest */
+    static public function __unittest()
+    {
+        echo("HELLO");
     }
 }

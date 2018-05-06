@@ -10,9 +10,15 @@ use \PHOC\Entry;
 class BlogMain
 {
     /** @PHOC\Entry */
-    static public function Main()
+    static public function Main($argc, $argv, $env)
     {
-        echo("Hello World!");
+        echo("Hello World!<br />");
+        echo("Argc: " . $argc . "<br />");
+        echo("Argv: ");
+        var_dump($argv);
+        echo("<br />");
+        if($env["Debug"])
+            echo("Is in Debug Mode.<br />");
     }
     /**
      * @Route("/")

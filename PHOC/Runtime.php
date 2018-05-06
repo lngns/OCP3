@@ -10,6 +10,7 @@ namespace PHOC;
 abstract class Runtime
 {
     static private $EntryPoint;
+    static private $Configuration;
 
     static public function SetEntryPoint($entryPoint)
     {
@@ -20,6 +21,10 @@ abstract class Runtime
     static public function GetEntryPoint()
     {
         return self::$EntryPoint;
+    }
+    static public function GetXmlConfiguration()
+    {
+        return self::$Configuration;
     }
     static public function Autoload($classname)
     {
@@ -41,13 +46,13 @@ abstract class Runtime
     static public function Start()
     {
         \spl_autoload_register("\\PHOC\\Runtime::Autoload");
-        include_once("PHOC" . DIRECTORY_SEPARATOR . "Annotations.php");
 
         $configuration = \simplexml_load_file("." . DIRECTORY_SEPARATOR . "configuration.xml");
         $entryClass = (string) $configuration->{"entry-class"};
         $resourceDir = (string) $configuration->{"resource-directory"};
         $entryClass = \str_replace(array("/", "\\"), DIRECTORY_SEPARATOR, $entryClass);
         $resourceDir = \str_replace(array("/", "\\"), DIRECTORY_SEPARATOR, $resourceDir);
+        self::$Configuration = $configuration;
 
         include_once($resourceDir . DIRECTORY_SEPARATOR . $entryClass . ".php");
         Annotations::GetAnnotations($entryClass, Annotations::T_CLASS);
@@ -56,6 +61,12 @@ abstract class Runtime
             throw new \RuntimeException("Entry Point not defined.");
         else if(!\is_callable(self::$EntryPoint))
             throw new \RuntimeException("Entry Point not callable.");
-        \call_user_func(self::$EntryPoint); //because PHP
+        if(PHP_SAPI === "cli" || PHP_SAPI === "cgi" || PHP_SAPI === "cgi-fcgi")
+            $_argv = $_SERVER["argv"];
+        else
+            \parse_str($_SERVER["QUERY_STRING"], $_argv);
+        $_argc = \count($_argv);
+        $_argv[$_argc] = NULL; //argv[argc] is NULL as per POSIX
+        \call_user_func(self::$EntryPoint, $_argc, $_argv, Environment::__GetEnvironment());
     }
 }
