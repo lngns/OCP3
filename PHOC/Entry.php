@@ -7,10 +7,10 @@
  */
 namespace PHOC;
 
-class Entry
+final class Entry
 {
     public function __construct($entity, ...$args)
     {
-        echo(PHP_EOL . "<br />Entry Point is " . $entity["Symbol"] . PHP_EOL . "<br />");
+        Runtime::SetEntryPoint($entity["Symbol"]);
     }
 }

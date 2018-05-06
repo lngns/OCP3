@@ -12,7 +12,7 @@ abstract class Annotations
     const T_CLASS = "Class";
     const T_METHOD = "Method";
     const T_FUNCTION = "Function";
-    static public $List = array();
+    static private $List = array();
 
     static public function GetAnnotations($symbol, $type = self::T_CLASS)
     {

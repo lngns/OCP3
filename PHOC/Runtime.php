@@ -7,21 +7,36 @@
  */
 namespace PHOC;
 
-class Runtime
+abstract class Runtime
 {
-    static public function Autoload($class)
+    static private $EntryPoint;
+
+    static public function SetEntryPoint($entryPoint)
     {
-        $class = ltrim($class, "\\");
+        if(self::$EntryPoint)
+            throw new \RuntimeException("Entry Point already defined.");
+        self::$EntryPoint = $entryPoint;
+    }
+    static public function GetEntryPoint()
+    {
+        return self::$EntryPoint;
+    }
+    static public function Autoload($classname)
+    {
+        $class = \ltrim($classname, "\\");
         $file = "";
-        if(($lastNsPos = strrpos($class, "\\")) !== false)
+        if(($lastNsPos = \strrpos($class, "\\")) !== false)
         {
-            $namespace = substr($class, 0, $lastNsPos);
-            $class     = substr($class, $lastNsPos + 1);
-            $file  = str_replace("\\", DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
+            $namespace = \substr($class, 0, $lastNsPos);
+            $class     = \substr($class, $lastNsPos + 1);
+            $file  = \str_replace("\\", DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
         }
         $file .= $class . ".php";
-        if(file_exists($file))
+        if(\file_exists($file))
+        {
             include_once($file);
+            Annotations::GetAnnotations($classname, Annotations::T_CLASS);
+        }
     }
     static public function Start()
     {
@@ -29,15 +44,18 @@ class Runtime
         include_once("PHOC" . DIRECTORY_SEPARATOR . "Annotations.php");
 
         $configuration = \simplexml_load_file("." . DIRECTORY_SEPARATOR . "configuration.xml");
-        $entryFile = (string) $configuration->{"entry-file"};
+        $entryClass = (string) $configuration->{"entry-class"};
         $resourceDir = (string) $configuration->{"resource-directory"};
-        $entryFile = str_replace(array("/", "\\"), DIRECTORY_SEPARATOR, $entryFile);
-        $resourceDir = str_replace(array("/", "\\"), DIRECTORY_SEPARATOR, $resourceDir);
+        $entryClass = \str_replace(array("/", "\\"), DIRECTORY_SEPARATOR, $entryClass);
+        $resourceDir = \str_replace(array("/", "\\"), DIRECTORY_SEPARATOR, $resourceDir);
 
-        include_once($resourceDir . DIRECTORY_SEPARATOR . $entryFile);
-        \BlogMain::Main();
+        include_once($resourceDir . DIRECTORY_SEPARATOR . $entryClass . ".php");
+        Annotations::GetAnnotations($entryClass, Annotations::T_CLASS);
 
-        Annotations::GetAnnotations("\\BlogMain", Annotations::T_CLASS);
-        var_dump(Annotations::$List);
+        if(!self::$EntryPoint)
+            throw new \RuntimeException("Entry Point not defined.");
+        else if(!\is_callable(self::$EntryPoint))
+            throw new \RuntimeException("Entry Point not callable.");
+        \call_user_func(self::$EntryPoint); //because PHP
     }
 }

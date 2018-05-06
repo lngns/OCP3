@@ -2,7 +2,7 @@
 <configuration>
     <!--<?php die(); ?>-->
     <logs-file>logs.txt</logs-file>
-    <entry-file>BlogMain.php</entry-file>
+    <entry-class>BlogMain</entry-class>
     <resource-directory>local</resource-directory>
     <default-sql-charset>utf8</default-sql-charset>
     <default-sql-port>3306</default-sql-port>
