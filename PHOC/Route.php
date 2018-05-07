@@ -13,7 +13,7 @@ class Route
     {
         if($entity["Type"] !== Annotations::T_METHOD)
             throw new \InvalidArgumentException("@Route is applicable only on methods.");
-        if(!is_string($route))
+        if(!is_string($route) && $route !== 404)
             throw new \InvalidArgumentException("Route::__construct() expects string as argument 2.");
         if(empty($route))
             throw new \InvalidArgumentException("Route::__construct() expects non-empty string as argument 2.");

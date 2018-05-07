@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <configuration>
     <!--<?php die(); ?>-->
+    <base-url>/OC/P3</base-url>
     <logs-file>logs.txt</logs-file>
     <entry-class>BlogMain</entry-class>
     <resource-directory>local</resource-directory>

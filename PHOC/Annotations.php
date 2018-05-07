@@ -37,12 +37,8 @@ abstract class Annotations
         {
             throw new \InvalidArgumentException("Symbol " . $symbol . " does not exist or is not supported.");
         }
-        if($type === self::T_CLASS)
-        {
-            foreach($reflection->getMethods() as $method)
-                Annotations::GetAnnotations($symbol . "::" . $method->name, self::T_METHOD);
-        }
         $objects = [];
+        /** @noinspection PhpUndefinedMethodInspection -- IDE is not smart enough to get that $reflection is a ReflectionSomething */
         $doc = $reflection->getDocComment();
         $annotations = self::ParseDocComment($doc);
         foreach($annotations["Annotations"] as $annotation)
@@ -51,20 +47,26 @@ abstract class Annotations
             if(!\class_exists($class))
                 throw new \UnexpectedValueException("Class " . $class . " does not exist.");
             $arguments = $annotation["Arguments"];
-            $len = count($arguments);
+            $len = \count($arguments);
             for($i = 0; $i < $len; ++$i)
                 $arguments[$i] = eval("return " . $arguments[$i] . ";");
-            array_unshift($arguments, array("Type" => $type, "Symbol" => $symbol));
+            \array_unshift($arguments, array("Type" => $type, "Symbol" => $symbol));
             $objects[] = new $class(...$arguments);
         }
         self::$List[$type . ':' . $symbol] = $objects;
+        if($type === self::T_CLASS)
+        {
+            /** @noinspection PhpUndefinedMethodInspection -- IDE is not smart enough to get that $reflection is a ReflectionClass */
+            foreach($reflection->getMethods() as $method)
+                Annotations::GetAnnotations($symbol . "::" . $method->name, self::T_METHOD);
+        }
         return $objects;
     }
     static public function ParseDocComment($source)
     {
         $errors = [];
         $annotations = [];
-        $source = substr($source, 3, strlen($source) - 5);
+        $source = \substr($source, 3, \strlen($source) - 5);
         $lines = \preg_split("/\r\n|\n|\r/", $source);
         foreach($lines as $line)
         {
@@ -77,7 +79,7 @@ abstract class Annotations
                 continue;
             $buffer = "";
             $args = array();
-            $len = strlen($line);
+            $len = \strlen($line);
             for($i = 1; $i < $len; ++$i)
             {
                 $char = $line[$i];
@@ -96,7 +98,7 @@ abstract class Annotations
                             break;
                         if($char === ',' && $depth === 1)
                         {
-                            $args[] = trim($argBuffer);
+                            $args[] = \trim($argBuffer);
                             $argBuffer = "";
                         }
                         else
@@ -108,7 +110,7 @@ abstract class Annotations
                         break;
                     }
                     if(!empty($argBuffer))
-                        $args[] = trim($argBuffer);
+                        $args[] = \trim($argBuffer);
                     $i = $j;
                 }
                 else
@@ -126,15 +128,16 @@ abstract class Annotations
     }
     static public function ForceUpdate()
     {
-        foreach(get_declared_classes() as $symbol)
+        foreach(\get_declared_classes() as $symbol)
         {
             if($symbol[0] !== '\\')
                 $symbol = '\\' . $symbol;
+            /** @noinspection PhpUnhandledExceptionInspection -- Symbol provided by the PHP engine. */
             $reflection = new \ReflectionClass($symbol);
             if(!isset(self::$List["Class:" . $symbol]) && !$reflection->isInternal())
                 Annotations::GetAnnotations($symbol, self::T_CLASS);
         }
-        foreach(get_defined_functions()["user"] as $symbol)
+        foreach(\get_defined_functions()["user"] as $symbol)
         {
             if(!isset(self::$List["Function:" . $symbol]))
                 Annotations::GetAnnotations($symbol, self::T_FUNCTION);

@@ -5,7 +5,6 @@
  * Date: 05/06/2018
  * Time: 07:07 AM
  */
-use \PHOC\Entry;
 
 class BlogMain
 {
@@ -13,18 +12,17 @@ class BlogMain
     static public function Main()
     {
         \session_start();
-        echo("Hello World!<br />");
-        var_dump(\PHOC\WebInterface::$Interfaces);
+        \PHOC\WebInterface::Dispatch(BlogMain::class);
     }
 
     /** @PHOC\Route("/") */
-    public function Index()
+    static public function Index()
     {
-        //...
+        echo("In BlogMain::Index()");
     }
-    /** @PHOC\Route("/archives/*") */
-    public function Archives()
+    /** @PHOC\Route("/archives/{*}") */
+    static public function Archives()
     {
-        //...
+        echo("In BlogMain::Archives()");
     }
 }

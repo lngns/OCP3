@@ -4,6 +4,7 @@
  * User: Longinus
  * Date: 04/19/2018
  * Time: 09:18 PM
+ * @noinspection PhpUndefinedMethodInspection -- calls Configuration::__callStatic()
  */
 namespace PHOC;
 
@@ -39,6 +40,7 @@ abstract class Runtime
         $file .= $class . ".php";
         if(\file_exists($file))
         {
+            /** @noinspection PhpIncludeInspection -- that's an autoloader */
             include_once($file);
             Annotations::GetAnnotations($classname, Annotations::T_CLASS);
         }
@@ -48,14 +50,11 @@ abstract class Runtime
         \spl_autoload_register("\\PHOC\\Runtime::Autoload");
 
         $configuration = \simplexml_load_file("." . DIRECTORY_SEPARATOR . "configuration.xml");
-        $entryClass = (string) $configuration->{"entry-class"};
-        $resourceDir = (string) $configuration->{"resource-directory"};
-        $entryClass = \str_replace(array("/", "\\"), DIRECTORY_SEPARATOR, $entryClass);
-        $resourceDir = \str_replace(array("/", "\\"), DIRECTORY_SEPARATOR, $resourceDir);
         self::$Configuration = $configuration;
 
-        include_once($resourceDir . DIRECTORY_SEPARATOR . $entryClass . ".php");
-        Annotations::GetAnnotations($entryClass, Annotations::T_CLASS);
+        /** @noinspection PhpIncludeInspection -- is supposed to be here. It's not our problem if it isn't */
+        include_once(Configuration::ResourceDirectory() . DIRECTORY_SEPARATOR . Configuration::EntryClass() . ".php");
+        Annotations::GetAnnotations(Configuration::EntryClass(), Annotations::T_CLASS);
 
         if(!self::$EntryPoint)
             throw new \RuntimeException("Entry Point not defined.");

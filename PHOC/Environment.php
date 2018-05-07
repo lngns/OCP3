@@ -26,7 +26,6 @@ abstract class Environment
         if(isset(self::$Environment[$name]))
             return self::$Environment[$name];
         else
-            //throw new \UnexpectedValueException("Invalid Environment Index " . $name . ".");
             return NULL;
     }
     static public function __GetEnvironment()

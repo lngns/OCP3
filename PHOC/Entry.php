@@ -21,7 +21,7 @@ final class Entry
                 $entry = \explode("::", $entity["Symbol"]);
             if(\class_exists($entry[0]) && \method_exists($entry[0], $entry[1]))
             {
-                /** @noinspection PhpUnhandledExceptionInspection -- No throwing paths can possibly be followed */
+                /** @noinspection PhpUnhandledExceptionInspection -- Symbol existence already checked. */
                 $method = new \ReflectionMethod($entry[0], $entry[1]);
                 if(!$method->isPublic() || !$method->isStatic())
                     throw new \UnexpectedValueException("Entry Point must be a function or a class having a Main method.");
