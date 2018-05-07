@@ -16,7 +16,7 @@ abstract class Environment
     {
         if(!self::$Environment)
         {
-            self::$Environment = array();
+            self::$Environment = [];
             foreach(Runtime::GetXmlConfiguration()->environment->add as $value)
                 self::$Environment[(string) $value["name"]] = (string) $value;
         }
@@ -26,7 +26,8 @@ abstract class Environment
         if(isset(self::$Environment[$name]))
             return self::$Environment[$name];
         else
-            throw new \UnexpectedValueException("Invalid Environment Index " . $name . ".");
+            //throw new \UnexpectedValueException("Invalid Environment Index " . $name . ".");
+            return NULL;
     }
     static public function __GetEnvironment()
     {

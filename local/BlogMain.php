@@ -10,23 +10,21 @@ use \PHOC\Entry;
 class BlogMain
 {
     /** @PHOC\Entry */
-    static public function Main($argc, $argv, $env)
+    static public function Main()
     {
+        \session_start();
         echo("Hello World!<br />");
+        var_dump(\PHOC\WebInterface::$Interfaces);
     }
-    /**
-     * @Route("/")
-     * @Foo(1+1, "test")
-     */
-    static public function Test() {}
-}
-class AnnotationTest
-{
-    public $args;
-    public function __construct(...$args)
+
+    /** @PHOC\Route("/") */
+    public function Index()
     {
-        $this->args = $args;
+        //...
+    }
+    /** @PHOC\Route("/archives/*") */
+    public function Archives()
+    {
+        //...
     }
 }
-class Route extends AnnotationTest {}
-class Foo extends AnnotationTest {}

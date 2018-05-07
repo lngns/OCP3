@@ -20,12 +20,12 @@ final class UnitTest
 
     static private $_utTest;
     /** @PHOC\UnitTest */
-    static public function __dummy()
+    static public function __Dummy()
     {
         self::$_utTest = 42;
     }
     /** @PHOC\UnitTest */
-    static public function __unittest()
+    static public function __UnitTest()
     {
         assert(self::$_utTest === 42);
     }

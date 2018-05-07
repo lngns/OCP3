@@ -42,7 +42,7 @@ abstract class Annotations
             foreach($reflection->getMethods() as $method)
                 Annotations::GetAnnotations($symbol . "::" . $method->name, self::T_METHOD);
         }
-        $objects = array();
+        $objects = [];
         $doc = $reflection->getDocComment();
         $annotations = self::ParseDocComment($doc);
         foreach($annotations["Annotations"] as $annotation)
@@ -52,10 +52,8 @@ abstract class Annotations
                 throw new \UnexpectedValueException("Class " . $class . " does not exist.");
             $arguments = $annotation["Arguments"];
             $len = count($arguments);
-            //var_dump($arguments);
             for($i = 0; $i < $len; ++$i)
                 $arguments[$i] = eval("return " . $arguments[$i] . ";");
-            //var_dump($arguments);
             array_unshift($arguments, array("Type" => $type, "Symbol" => $symbol));
             $objects[] = new $class(...$arguments);
         }
@@ -64,13 +62,12 @@ abstract class Annotations
     }
     static public function ParseDocComment($source)
     {
-        $errors = array();
-        $annotations = array();
+        $errors = [];
+        $annotations = [];
         $source = substr($source, 3, strlen($source) - 5);
         $lines = \preg_split("/\r\n|\n|\r/", $source);
         foreach($lines as $line)
         {
-            //echo("Before: "); var_dump($line);
             $line = \ltrim($line);
             if(empty($line))
                 continue;
@@ -78,7 +75,6 @@ abstract class Annotations
                 $line = \ltrim(\substr($line, 1));
             if($line[0] !== '@')
                 continue;
-            //echo("After: "); var_dump($line);
             $buffer = "";
             $args = array();
             $len = strlen($line);
@@ -146,7 +142,7 @@ abstract class Annotations
     }
 
     /** @PHOC\UnitTest */
-    static public function __unittest()
+    static public function __UnitTest()
     {
         //One Annotation
         $code = "
