@@ -24,8 +24,8 @@ abstract class Configuration
             $resourceDirectory = \str_replace(array("/", "\\"), DIRECTORY_SEPARATOR, $resourceDirectory);
 
             $baseUrl = (string) $configuration->{"base-url"};
-            if($baseUrl[strlen($baseUrl) - 1] === '/')
-                $baseUrl = substr($baseUrl, 0, strlen($baseUrl) - 1);
+            if($baseUrl[\strlen($baseUrl) - 1] === '/')
+                $baseUrl = \substr($baseUrl, 0, \strlen($baseUrl) - 1);
 
             self::$Configuration = [
                 "BaseUrl" => $baseUrl,

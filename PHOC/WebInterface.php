@@ -65,7 +65,7 @@ class WebInterface
         $match = self::Match($request, self::$Interfaces[$interface]);
         if($match["Route"] === 404)
         {
-            header("HTTP/1.0 404 Page Not Found");
+            \header("HTTP/1.0 404 Page Not Found");
             if(!isset(self::$Interfaces[$interface][404]))
                 echo("Error 404. Page Not Found.");
             else
@@ -86,7 +86,7 @@ class WebInterface
             else
             {
                 $params = [];
-                $regex = strtr($route, [
+                $regex = \strtr($route, [
                     '#' => "\\#", //regex delimiter
                     "(" => "\\(",
                     ")" => "\\)",
@@ -94,9 +94,9 @@ class WebInterface
                     "{i}" => "([0-9]+)",
                     "{a}" => "([0-9a-zA-Z_]+)"
                 ]);
-                if(preg_match("#^" . $regex . "$#", $request, $params))
+                if(\preg_match("#^" . $regex . "$#", $request, $params))
                 {
-                    array_shift($params);
+                    \array_shift($params);
                     return ["Route" => $route, "Params" => $params];
                 }
             }
