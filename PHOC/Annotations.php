@@ -10,6 +10,7 @@ namespace PHOC;
 abstract class Annotations
 {
     const T_CLASS = "Class";
+    const T_FIELD = "Field";
     const T_METHOD = "Method";
     const T_FUNCTION = "Function";
     static private $List = array();
