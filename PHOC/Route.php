@@ -7,9 +7,9 @@
  */
 namespace PHOC;
 
-class Route
+final class Route
 {
-    public function __construct($entity, $route)
+    public function __construct(array $entity, string $route)
     {
         if($entity["Type"] !== Annotations::T_METHOD)
             throw new \InvalidArgumentException("@Route is applicable only on methods.");

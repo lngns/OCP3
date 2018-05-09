@@ -9,7 +9,7 @@ namespace PHOC;
 
 final class UnitTest
 {
-    public function __construct($entity)
+    public function __construct(array $entity)
     {
         if($entity["Type"] !== Annotations::T_CLASS)
         {

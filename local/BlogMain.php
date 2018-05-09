@@ -9,14 +9,21 @@
 
 class BlogMain
 {
-    /** @PHOC\SessionVar("email") */
-    static public $userEmail;
+    /** @PHOC\SessionVar */
+    static private $userEmail; //PHP doesn't allow non-constant expressions to initialize static fields
+                               //Yet, such an annotation system allows it, which I find pretty funny
 
     /** @PHOC\Entry */
     static public function Main()
     {
         \session_start();
         \PHOC\WebInterface::Dispatch(BlogMain::class);
+    }
+    static public function Redirect(string $url)
+    {
+        if($url[0] !== '/')
+            $url = '/' . $url;
+        \header("Location: " . \PHOC\Configuration::BaseUrl() . $url);
     }
 
     /** @PHOC\Route("/") */
@@ -30,5 +37,11 @@ class BlogMain
     static public function Archives()
     {
         echo("In BlogMain::Archives(). Email: " . self::$userEmail);
+    }
+    /** @PHOC\Route("/setEmail/{*}") */
+    static public function SetEmail(string $email)
+    {
+        self::$userEmail->Set($email);
+        self::Redirect("/");
     }
 }

@@ -27,7 +27,7 @@ abstract class Runtime
     {
         return self::$Configuration;
     }
-    static public function Autoload($classname)
+    static public function Autoload(string $classname)
     {
         $class = \ltrim($classname, "\\");
         $file = "";

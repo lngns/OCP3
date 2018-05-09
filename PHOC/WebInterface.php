@@ -7,7 +7,7 @@
  */
 namespace PHOC;
 
-class WebInterface
+abstract class WebInterface
 {
     static private $Interfaces = [];
     static private $ErrorHandler;
@@ -27,15 +27,16 @@ class WebInterface
             };
         }
     }
-    static public function RegisterRoute($interface, $route, $handler)
+    static public function RegisterRoute(string $interface, string $route, callable $handler)
     {
         $interface = \ltrim($interface, '\\');
+        $route = \preg_quote($route, '#');
         if(isset(self::$Interfaces[$interface]))
             self::$Interfaces[$interface][$route] = $handler;
         else
             self::$Interfaces[$interface] = [$route => $handler];
     }
-    static public function RemoveRoute($interface, $route)
+    static public function RemoveRoute(string $interface, string $route)
     {
         if(isset(self::$Interfaces[$interface], self::$Interfaces[$interface][$route]))
         {
@@ -45,14 +46,14 @@ class WebInterface
         }
         return NULL;
     }
-    static public function RegisterErrorHandler($handler)
+    static public function RegisterErrorHandler(callable $handler)
     {
         if(!\is_callable($handler))
             throw new \InvalidArgumentException("WebInterface::RegisterErrorHandler() expects callable as argument 1.");
         self::$ErrorHandler = $handler;
     }
 
-    static public function Dispatch($interface, $request = NULL)
+    static public function Dispatch(string $interface, string $request = NULL)
     {
         if(!isset(self::$Interfaces[$interface]))
             \call_user_func(self::$ErrorHandler);
@@ -74,12 +75,12 @@ class WebInterface
         else
             \call_user_func_array(self::$Interfaces[$interface][$match["Route"]], $match["Params"]);
     }
-    static public function Match($request, array $routes)
+    static public function Match(string $request, array $routes)
     {
         foreach($routes as $route => $handler)
         {
             //var_dump($route);
-            if($route === '*')
+            if($route === "\\*")
                 return ["Route" => $route, "Params" => []];
             else if(\strpos($route, '{') === false && \strcmp($route, $request) === 0)
                 return ["Route" => $route, "Params" => []];
@@ -87,12 +88,9 @@ class WebInterface
             {
                 $params = [];
                 $regex = \strtr($route, [
-                    '#' => "\\#", //regex delimiter
-                    "(" => "\\(",
-                    ")" => "\\)",
-                    "{*}" => "(.+)",
-                    "{i}" => "([0-9]+)",
-                    "{a}" => "([0-9a-zA-Z_]+)"
+                    "\\{\\*\\}" => "(.+)",
+                    "\\{i\\}" => "([0-9]+)",
+                    "\\{a\\}" => "([0-9a-zA-Z_]+)"
                 ]);
                 if(\preg_match("#^" . $regex . "$#", $request, $params))
                 {

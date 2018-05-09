@@ -9,7 +9,7 @@ namespace PHOC;
 
 final class Entry
 {
-    public function __construct($entity)
+    public function __construct(array $entity)
     {
         if($entity["Type"] === Annotations::T_CLASS)
             $func = [$entity["Symbol"], "Main"];

@@ -16,7 +16,7 @@ abstract class Annotations
     static private $List = array();
     static private $Ignore = array();
 
-    static public function GetAnnotations($symbol, $type = self::T_CLASS)
+    static public function GetAnnotations(string $symbol, string $type = self::T_CLASS)
     {
         if($symbol[0] !== '\\')
             $symbol = '\\' . $symbol;
@@ -70,7 +70,7 @@ abstract class Annotations
         }
         return $objects;
     }
-    static public function ParseDocComment($source)
+    static public function ParseDocComment(string $source)
     {
         $errors = [];
         $annotations = [];
@@ -151,7 +151,7 @@ abstract class Annotations
                 Annotations::GetAnnotations($symbol, self::T_FUNCTION);
         }
     }
-    static public function RegisterAnnotationToIgnore($class)
+    static public function RegisterAnnotationToIgnore(string $class)
     {
         self::$Ignore[] = $class;
     }

@@ -7,9 +7,9 @@
  */
 namespace PHOC;
 
-class SessionVar
+final class SessionVar
 {
-    public function __construct($entity, $field = NULL)
+    public function __construct(array $entity, string $field = NULL)
     {
         if($entity["Type"] === Annotations::T_FIELD)
         {
