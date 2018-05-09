@@ -13,17 +13,17 @@ abstract class Runtime
     static private $EntryPoint;
     static private $Configuration;
 
-    static public function SetEntryPoint($entryPoint)
+    static public function SetEntryPoint(callable $entryPoint)
     {
         if(self::$EntryPoint)
             throw new \RuntimeException("Entry Point already defined.");
         self::$EntryPoint = $entryPoint;
     }
-    static public function GetEntryPoint()
+    static public function GetEntryPoint(): callable
     {
         return self::$EntryPoint;
     }
-    static public function GetXmlConfiguration()
+    static public function GetXmlConfiguration(): \SimpleXMLElement
     {
         return self::$Configuration;
     }

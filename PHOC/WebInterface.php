@@ -36,7 +36,7 @@ abstract class WebInterface
         else
             self::$Interfaces[$interface] = [$route => $handler];
     }
-    static public function RemoveRoute(string $interface, string $route)
+    static public function RemoveRoute(string $interface, string $route): callable
     {
         if(isset(self::$Interfaces[$interface], self::$Interfaces[$interface][$route]))
         {
@@ -75,7 +75,7 @@ abstract class WebInterface
         else
             \call_user_func_array(self::$Interfaces[$interface][$match["Route"]], $match["Params"]);
     }
-    static public function Match(string $request, array $routes)
+    static public function Match(string $request, array $routes): array
     {
         foreach($routes as $route => $handler)
         {

@@ -16,7 +16,10 @@ final class SessionVar
             $parts = \explode("::", $entity["Symbol"]);
             if($field === NULL)
                 $field = $parts[1];
-            $object = new class($field) {
+            /** @noinspection PhpUnhandledExceptionInspection -- already checked by annotation engine */
+            $reflection = new \ReflectionProperty($parts[0], $parts[1]);
+            $reflection->setAccessible(true);
+            $reflection->setValue(new class($field) {
                 private $field;
 
                 public function __construct($field)
@@ -29,9 +32,9 @@ final class SessionVar
                         return isset($_SESSION[$this->field]) ? $_SESSION[$this->field] : NULL;
                     return $_SESSION[$this->field] = $value;
                 }
-                public function __toString()
+                public function __toString(): string
                 {
-                    return (string) $this->__invoke();
+                    return $this->__invoke();
                 }
                 public function Get()
                 {
@@ -41,11 +44,7 @@ final class SessionVar
                 {
                     return $this->__invoke($v); //because PHP
                 }
-            };
-            /** @noinspection PhpUnhandledExceptionInspection -- already checked by annotation engine */
-            $reflection = new \ReflectionProperty($parts[0], $parts[1]);
-            $reflection->setAccessible(true);
-            $reflection->setValue($object);
+            });
         }
     }
 
@@ -56,6 +55,6 @@ final class SessionVar
     static public function __UnitTest()
     {
         $_SESSION["__phoc_sv_utTest"] = 42;
-        assert(self::$data->Get() === 42); //azert
+        assert(self::$data->Get() === 42);
     }
 }
