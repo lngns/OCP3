@@ -56,6 +56,6 @@ class SessionVar
     static public function __UnitTest()
     {
         $_SESSION["__phoc_sv_utTest"] = 42;
-        assert(self::$data->Get() === 42); //aertqerf
+        assert(self::$data->Get() === 42); //azert
     }
 }
