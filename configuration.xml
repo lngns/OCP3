@@ -3,11 +3,18 @@
     <!--<?php die(); ?>-->
     <base-url>/OC/P3</base-url>
     <logs-file>logs.txt</logs-file>
-    <entry-class>BlogMain</entry-class>
-    <resource-directory>local</resource-directory>
+    <entry-class>\Blog\BlogMain</entry-class>
+    <resource-directory>Blog</resource-directory>
     <default-sql-charset>utf8</default-sql-charset>
     <default-sql-port>3306</default-sql-port>
     <environment>
         <add name="Debug">true</add>
     </environment>
+    <sqlserver id="Release" host="localhost" ignore-if="Debug">
+        <driver>mysql</driver>
+        <schema>blog</schema>
+        <user>dev</user>
+        <password>0123</password>
+    </sqlserver>
+    <sqlserver id="Debug" conf="../sql.xml" only-if="Debug" />
 </configuration>

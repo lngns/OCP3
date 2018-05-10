@@ -34,7 +34,7 @@ final class SessionVar
                 }
                 public function __toString(): string
                 {
-                    return $this->__invoke();
+                    return (string) $this->__invoke();
                 }
                 public function Get()
                 {

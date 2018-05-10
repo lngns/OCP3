@@ -47,6 +47,8 @@ abstract class Runtime
     }
     static public function Start()
     {
+        \error_reporting(E_ALL);
+        \ini_set("display_errors", 1);
         \spl_autoload_register("\\PHOC\\Runtime::Autoload");
 
         $configuration = \simplexml_load_file("." . DIRECTORY_SEPARATOR . "configuration.xml");
@@ -54,9 +56,7 @@ abstract class Runtime
 
         Annotations::RegisterAnnotationToIgnore("noinspection");
 
-        /** @noinspection PhpIncludeInspection -- is supposed to be here. It's not our problem if it isn't */
-        include_once(Configuration::ResourceDirectory() . DIRECTORY_SEPARATOR . Configuration::EntryClass() . ".php");
-        Annotations::GetAnnotations(Configuration::EntryClass(), Annotations::T_CLASS);
+        self::Autoload(Configuration::EntryClass());
 
         if(!self::$EntryPoint)
             throw new \RuntimeException("Entry Point not defined.");
