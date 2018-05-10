@@ -10,11 +10,13 @@ namespace PHOC;
 abstract class Annotations
 {
     const T_CLASS = "Class";
+    const T_FIELD = "Property";
     const T_METHOD = "Method";
     const T_FUNCTION = "Function";
     static private $List = array();
+    static private $Ignore = array();
 
-    static public function GetAnnotations($symbol, $type = self::T_CLASS)
+    static public function GetAnnotations(string $symbol, string $type = self::T_CLASS): array
     {
         if($symbol[0] !== '\\')
             $symbol = '\\' . $symbol;
@@ -25,7 +27,7 @@ abstract class Annotations
             throw new \InvalidArgumentException("Type " . $type . " is not supported.");
         try
         {
-            if($type === self::T_METHOD)
+            if($type === self::T_METHOD || $type === self::T_FIELD)
             {
                 $parts = \explode("::", $symbol);
                 $reflection = new $class($parts[0], $parts[1]);
@@ -44,6 +46,8 @@ abstract class Annotations
         foreach($annotations["Annotations"] as $annotation)
         {
             $class = $annotation["Class"];
+            if(\in_array($class, self::$Ignore))
+                continue;
             if(!\class_exists($class))
                 throw new \UnexpectedValueException("Class " . $class . " does not exist.");
             $arguments = $annotation["Arguments"];
@@ -57,12 +61,16 @@ abstract class Annotations
         if($type === self::T_CLASS)
         {
             /** @noinspection PhpUndefinedMethodInspection -- IDE is not smart enough to get that $reflection is a ReflectionClass */
+            foreach ($reflection->getProperties() as $field)
+                Annotations::GetAnnotations($symbol . "::" . $field->name, self::T_FIELD);
+
+            /** @noinspection PhpUndefinedMethodInspection -- IDE is not smart enough to get that $reflection is a ReflectionClass */
             foreach($reflection->getMethods() as $method)
                 Annotations::GetAnnotations($symbol . "::" . $method->name, self::T_METHOD);
         }
         return $objects;
     }
-    static public function ParseDocComment($source)
+    static public function ParseDocComment(string $source): array
     {
         $errors = [];
         $annotations = [];
@@ -142,6 +150,10 @@ abstract class Annotations
             if(!isset(self::$List["Function:" . $symbol]))
                 Annotations::GetAnnotations($symbol, self::T_FUNCTION);
         }
+    }
+    static public function RegisterAnnotationToIgnore(string $class)
+    {
+        self::$Ignore[] = $class;
     }
 
     /** @PHOC\UnitTest */

@@ -13,21 +13,21 @@ abstract class Runtime
     static private $EntryPoint;
     static private $Configuration;
 
-    static public function SetEntryPoint($entryPoint)
+    static public function SetEntryPoint(callable $entryPoint)
     {
         if(self::$EntryPoint)
             throw new \RuntimeException("Entry Point already defined.");
         self::$EntryPoint = $entryPoint;
     }
-    static public function GetEntryPoint()
+    static public function GetEntryPoint(): callable
     {
         return self::$EntryPoint;
     }
-    static public function GetXmlConfiguration()
+    static public function GetXmlConfiguration(): \SimpleXMLElement
     {
         return self::$Configuration;
     }
-    static public function Autoload($classname)
+    static public function Autoload(string $classname)
     {
         $class = \ltrim($classname, "\\");
         $file = "";
@@ -47,14 +47,16 @@ abstract class Runtime
     }
     static public function Start()
     {
+        \error_reporting(E_ALL);
+        \ini_set("display_errors", 1);
         \spl_autoload_register("\\PHOC\\Runtime::Autoload");
 
         $configuration = \simplexml_load_file("." . DIRECTORY_SEPARATOR . "configuration.xml");
         self::$Configuration = $configuration;
 
-        /** @noinspection PhpIncludeInspection -- is supposed to be here. It's not our problem if it isn't */
-        include_once(Configuration::ResourceDirectory() . DIRECTORY_SEPARATOR . Configuration::EntryClass() . ".php");
-        Annotations::GetAnnotations(Configuration::EntryClass(), Annotations::T_CLASS);
+        Annotations::RegisterAnnotationToIgnore("noinspection");
+
+        self::Autoload(Configuration::EntryClass());
 
         if(!self::$EntryPoint)
             throw new \RuntimeException("Entry Point not defined.");
