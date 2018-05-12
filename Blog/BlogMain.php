@@ -64,7 +64,7 @@ class BlogMain
         var_dump($articles);
     }
     /** @PHOC\Route("/article/{*?}.{i}") */
-    static public function SetEmail(int $id)
+    static public function Article(int $id)
     {
         try
         {
