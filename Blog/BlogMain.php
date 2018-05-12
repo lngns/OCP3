@@ -11,8 +11,8 @@ namespace Blog;
 class BlogMain
 {
     /** @PHOC\SessionVar */
-    static private $Admin; //PHP doesn't allow non-constant expressions to initialize static fields
-                               //Yet, such an annotation system allows it, which I find pretty funny
+    static private $Admin;  //PHP doesn't allow non-constant expressions to initialize static fields
+                            //Yet, such an annotation system allows it, which I find pretty funny
     static private $Connection;
 
     /** @PHOC\Entry */
@@ -61,7 +61,7 @@ class BlogMain
             $articles = Article::GetLastArticles(5);
         else
             $articles = Article::GetArticlesFromLast($i * 5, 5);
-        var_dump($articles);
+        \PHOC\Template::RenderFile("archives.html")(["Articles" => $articles, "PageId" => $i]);
     }
     /** @PHOC\Route("/article/{*?}.{i}") */
     static public function Article(int $id)
