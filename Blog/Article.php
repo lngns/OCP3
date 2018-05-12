@@ -48,6 +48,10 @@ final class Article
             $batch[] = new Article($row[0], NULL, $row[3], $row[1], $row[2], $row[4]);
         return $batch;
     }
+    static public function GetFirstArticleId(): int
+    {
+        return BlogMain::GetSqlConnection()->exec("SELECT MIN(id) FROM articles");
+    }
     static public function ReadArticle(int $id): Article
     {
         $stmt = BlogMain::GetSqlConnection()->prepare(

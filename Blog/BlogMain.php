@@ -61,7 +61,12 @@ class BlogMain
             $articles = Article::GetLastArticles(5);
         else
             $articles = Article::GetArticlesFromLast($i * 5, 5);
-        \PHOC\Template::RenderFile("archives.html")(["Articles" => $articles, "PageId" => $i]);
+        $first = Article::GetFirstArticleId();
+        \PHOC\Template::RenderFile("archives.html")([
+            "Articles" => $articles,
+            "PageId" => $i,
+            "FirstId" => $first
+        ]);
     }
     /** @PHOC\Route("/article/{*?}.{i}") */
     static public function Article(int $id)
