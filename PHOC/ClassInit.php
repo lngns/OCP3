@@ -11,7 +11,7 @@ final class ClassInit
 {
     public function __construct($entity)
     {
-        if($entity["Type"] != Annotations::T_CLASS)
+        if($entity["Type"] != Annotations::T_CLASS && $entity["Type"] != Annotations::T_FIELD)
             call_user_func($entity["Symbol"]);
     }
 }

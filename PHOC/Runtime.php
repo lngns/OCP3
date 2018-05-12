@@ -54,7 +54,7 @@ abstract class Runtime
         $configuration = \simplexml_load_file("." . DIRECTORY_SEPARATOR . "configuration.xml");
         self::$Configuration = $configuration;
 
-        Annotations::RegisterAnnotationToIgnore("noinspection");
+        Annotations::RegisterAnnotationsToIgnore("noinspection", "return", "param", "var", "throws");
 
         self::Autoload(Configuration::EntryClass());
 

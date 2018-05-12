@@ -90,7 +90,10 @@ abstract class WebInterface
                 $regex = \strtr($route, [
                     "\\{\\*\\}" => "(.+)",
                     "\\{i\\}" => "([0-9]+)",
-                    "\\{a\\}" => "([0-9a-zA-Z_]+)"
+                    "\\{a\\}" => "([0-9a-zA-Z_]+)",
+                    "\\{\\*\\?\\}" => "(?:.+)",
+                    "\\{i\\?\\}" => "(?:[0-9]+)",
+                    "\\{a\\?\\}" => "(?:[0-9a-zA-Z_]+)"
                 ]);
                 if(\preg_match("#^" . $regex . "$#", $request, $params))
                 {
@@ -117,5 +120,7 @@ abstract class WebInterface
 
         assert(self::Match("/member/lngns.42", ["/member/{a}.{i}" => NULL]) === ["Route" => "/member/{a}.{i}", "Params" => ["lngns", "42"]]);
         assert(self::Match("/foo/aezrzqeRZTВЕКПРХФ/bar", ["/foo/{*}/bar" => NULL]) === ["Route" => "/foo/{*}/bar", "Params" => ["aezrzqeRZTВЕКПРХФ"]]);
+
+        assert(self::Match("/foo/bar", ["/{a?}/{a}" => NULL]) === ["Route" => "/{a?}/{a}", "Params" => ["bar"]]);
     }
 }
