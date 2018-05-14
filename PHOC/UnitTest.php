@@ -11,7 +11,7 @@ final class UnitTest
 {
     public function __construct(array $entity)
     {
-        if($entity["Type"] !== Annotations::T_CLASS)
+        if($entity["Type"] !== Annotations::T_CLASS && $entity["Type"] !== Annotations::T_FIELD)
         {
             if(Environment::Debug())
                 \call_user_func($entity["Symbol"]);

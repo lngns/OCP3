@@ -155,6 +155,10 @@ abstract class Annotations
     {
         self::$Ignore[] = $class;
     }
+    static public function RegisterAnnotationsToIgnore(string... $classes)
+    {
+        self::$Ignore = \array_merge(self::$Ignore, $classes);
+    }
 
     /** @PHOC\UnitTest */
     static public function __UnitTest()
