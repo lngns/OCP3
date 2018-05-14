@@ -17,8 +17,8 @@ abstract class Template
             "/\<phoc:include\s+file=\"(.*)\"\s*\/\>/sU",
             "/\<phoc:def\s+([a-zA-Z][a-zA-Z0-9_]*)=\"(.*)\"\s*\/\>/sU",
             "/\<phoc:out\s+var=\"(.*)\"\s*\/\>/sU",
-            "/\"(.*)\{phoc:out\s+var='(.*)'\s*\/?\}(.*)\"/U",
-            "/\"(.*)\{phoc:base-url\s*\/?\}(.*)\"/U"
+            "/\<(.*)=\"(.*)\{phoc:out\s+var='(.*)'\s*\/?\}(.*)\"(.*)\>/U",
+            "/\<(.*)=\"(.*)\{phoc:base-url\s*\/?\}(.*)\"(.*)\>/U"
         ],
         "Replace" => [
             "<?php if($1): ?>$2<?php else: ?>$3<?php endif; ?>",
@@ -27,8 +27,8 @@ abstract class Template
             "<?php echo(\\PHOC\\Template::RenderFile(\"$1\")()); ?>",
             "<?php \$$1 = $2; ?>",
             "<?php echo($1); ?>",
-            "\"$1<?php echo($2); ?>$3\"",
-            "\"$1<?php echo(\PHOC\Configuration::BaseUrl()); ?>$2\""
+            "<$1=\"$2<?php echo($3); ?>$4\"$5>",
+            "<$1=\"$2<?php echo(\PHOC\Configuration::BaseUrl()); ?>$3\"$4>"
         ]
     ];
     static public function Compile(string $source)
