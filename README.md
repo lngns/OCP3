@@ -16,8 +16,8 @@ In the case there are inside a string, then double quotes must be changed to sin
 Ex: `<phoc:out var="$foo" />` and `<span class="{phoc:out var='$foo'}">...</span>`
 
 Any PHP expression can be passed to PHOC tags, as long as it is of the requested type.  
-The dialect also supports comment with a weird syntax: `<phoc:!-- comment here --/>`.  
-They can be expressed as the RegExp `/\<phoc:!--(.*)--\/?\>/sU` and are removed before emission of the resulting XML or HTML code.
+The dialect also supports comments with a weird syntax: `<phoc:!-- comment here --/>`.  
+They can be expressed as the RegExp `/\<phoc:!--(.*)--\/?\>/sU` _(note the last `/` is optional)_ and are removed before emission of the resulting XML or HTML code.
 
 ```cpp
 namespace phoc
