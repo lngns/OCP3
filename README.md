@@ -15,7 +15,9 @@ Among them are two tags dedicated to outputing content. They are also accepted i
 In the case there are inside a string, then double quotes must be changed to single quotes, to match regular XML code.  
 Ex: `<phoc:out var="$foo" />` and `<span class="{phoc:out var='$foo'}">...</span>`
 
-Any PHP expression can be passed to PHOC tags, as long as it is of the requested type.
+Any PHP expression can be passed to PHOC tags, as long as it is of the requested type.  
+The dialect also supports comment with a weird syntax: `<phoc:!-- comment here --/>`.  
+They can be expressed as the RegExp `/\<phoc:!--(.*)--\/?\>/sU` and are removed before emission of the resulting XML or HTML code.
 
 ```cpp
 namespace phoc
