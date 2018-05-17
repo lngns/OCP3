@@ -6,7 +6,15 @@ It is a simple annotation-based IoC framework supporting unit tests.
 The website is based on it, and uses a standard MVC structure.  
 It has been tested with Apache2, MySQL5 and PHP7 only.  
 
-XML Templating  
+## XML Templating
+
+PHOC supports a form of pseudo-XML templating including multiple XML tags.  
+It is "pseudo-XML" as no actual XML declaration is needed and the processor is happy manipulating HTML documents.  
+These special tags reside inside the `phoc` XML namespace.  
+Among them are two tags dedicated to outputing content. There are also accepted inside strings with curly brackets instead of angled brackets.  
+In the case there are inside a string, then double quotes must be changed to single quotes, to match regular XML code.  
+Ex: `<phoc:out var="$foo" />` and `<span class="{phoc:out var='$foo'}">...</span>`
+
 ```cpp
 namespace phoc
 {
