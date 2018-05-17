@@ -7,7 +7,7 @@ The website is based on it, and uses a standard MVC structure.
 It has been tested with Apache2, MySQL5 and PHP7 only.  
 
 XML Templating  
-```c
+```cpp
 namespace phoc
 {
     //if the expression passed to `is` is true, then the body is evaluated.
