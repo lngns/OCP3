@@ -11,9 +11,11 @@ It has been tested with Apache2, MySQL5 and PHP7 only.
 PHOC supports a form of pseudo-XML templating including multiple XML tags.  
 It is "pseudo-XML" as no actual XML declaration is needed and the processor is happy manipulating HTML documents.  
 These special tags reside inside the `phoc` XML namespace.  
-Among them are two tags dedicated to outputing content. There are also accepted inside strings with curly brackets instead of angled brackets.  
+Among them are two tags dedicated to outputing content. They are also accepted inside strings with curly brackets instead of angled brackets.  
 In the case there are inside a string, then double quotes must be changed to single quotes, to match regular XML code.  
 Ex: `<phoc:out var="$foo" />` and `<span class="{phoc:out var='$foo'}">...</span>`
+
+Any PHP expression can be passed to PHOC tags, as long as it is of the requested type.
 
 ```cpp
 namespace phoc
