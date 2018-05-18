@@ -27,6 +27,7 @@ abstract class Runtime
     {
         return self::$Configuration;
     }
+    /** @throws AnnotationException */
     static public function Autoload(string $classname)
     {
         $class = \ltrim($classname, "\\");
@@ -45,6 +46,7 @@ abstract class Runtime
             Annotations::GetAnnotations($classname, Annotations::T_CLASS);
         }
     }
+    /** @throws AnnotationException */
     static public function Start()
     {
         \error_reporting(E_ALL);

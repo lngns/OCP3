@@ -19,20 +19,19 @@ To be recognized as such by the parser, an annotation must see its `@` character
 Hence, these three examples are seen as annotations:  
 ```php
 /** @Foo */
-```
-```
+
 /**
 @Bar
 */
-```
-```
+
 /**
  * @Baz
  */
 ```
 Only one annotation is allowed per line inside one doc comment, and all other information is ignored.  
-In the case another annotation parser is used, such as PHPDoc, it is possible to register key annotations to ignore with the `\PHOC\Annotations::RegisterAnnotationToIgnore(string): void` and `\PHOC\Annotations::RegisterAnnotationsToIgnore(string...): void` functions.  
-When an annotation is recognized, an object of the associated class name will be created with a map containing the entity's identity, and the passed argument, passed to the constructor.  
+In the case another annotation parser is used, such as PHPDoc, it is possible to register key annotations to ignore with the `\PHOC\Annotations::RegisterAnnotationToIgnore(string): void` and `::RegisterAnnotationsToIgnore(string...): void` functions.  
+By default, the `@noinspection`, `@return`, `@param`, `@var` and `@throws` annotations are ignored.  
+When an annotation is recognized, an object of the associated class name will be created with a map containing the entity's identity, and the passed arguments, passed to the constructor.  
 The map is of the form `["Type" => string, "Symbol" => string]` where `Type` is one of `\PHOC\Annotations::T_CLASS`, `::T_FIELD`, `::T_METHOD` or `::T_FUNCTION`.  
 In the case the indicated class does not exist, a `\PHOC\AnnotationException` is raised. Such exceptions are not meant to be caught.    
 As annotation deduction is triggered by the autoloader, it is a non-deterministic process.
