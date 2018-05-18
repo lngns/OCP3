@@ -6,6 +6,32 @@ It is a simple annotation-based IoC framework supporting unit tests.
 The website is based on it, and uses a standard MVC structure.  
 It has been tested with Apache2, MySQL5 and PHP7 only.  
 
+## Control Flow
+
+Programs using PHOC, such as this blog, follow a conventional control flow revolving around metadata, namely, annotations.  
+PHOC projects configure their HTTP server to redirect all requests to a single `index.php` file, which starts the PHOC's runtime with the `\PHOC\Runtime::Start` function.  
+From here, the runtime first declares a standard autoloader, then autoload the so-called "entry class", as defined in the `configuration.xml` file.  
+Notably, the PHOC's autoloader has the additional role of automatically querying the loaded class' annotations.  
+
+Annotations are pieces of metadata about program's entities, more precisely classes, functions and fields.  
+A PHOC annotation is written inside a PHP "doc comment" and with the forms `@T` or `@T(Args)` where `T` is a class name and `Args` a list of comma-separated PHP expressions.  
+To be recognized as such by the parser, an annotation must see its '@' character as the first on the current line, ignoring whitespaces, the first `*` character if there is one, and the first three chars `/**`.  
+Hence, these three examples are seen as annotations:  
+```php
+/** @Foo */
+```
+```
+/**
+@Bar
+*/
+```
+```
+/**
+ * @Baz
+ */
+```
+
+
 ## XML Templating
 
 PHOC supports a form of pseudo-XML templating including multiple XML tags.  
