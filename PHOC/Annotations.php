@@ -14,7 +14,8 @@ abstract class Annotations
     const T_METHOD = "Method";
     const T_FUNCTION = "Function";
     static private $List = array();
-    static private $Ignore = array();
+    static private $Ignore = array("noinspection", "return", "param", "var", "throws");
+    static private $AnnotationClasses = array("\PHOC\Annotation" => [Annotations::T_CLASS]);
 
     /** @throws \PHOC\AnnotationException, \InvalidArgumentException */
     static public function GetAnnotations(string $symbol, string $type = self::T_CLASS): array
@@ -51,10 +52,25 @@ abstract class Annotations
                 continue;
             if(!\class_exists($class))
                 throw new AnnotationException("Class " . $class . " does not exist.");
+            if($class[0] !== '\\')
+                $class = '\\' . $class;
+            if(!\in_array($class, \array_keys(self::$AnnotationClasses)))
+                throw new AnnotationException("Class " . $class . " is not an annotation class.");
+            if(!\in_array($type, self::$AnnotationClasses[$class]))
+                throw new AnnotationException("Annotation Class " . $class . " does not support " . $type . "s.");
             $arguments = $annotation["Arguments"];
             $len = \count($arguments);
             for($i = 0; $i < $len; ++$i)
-                $arguments[$i] = eval("return " . $arguments[$i] . ";");
+            {
+                switch($arguments[$i])
+                {
+                case "@Class": $arguments[$i] = Annotations::T_CLASS; break;
+                case "@Field": $arguments[$i] = Annotations::T_FIELD; break;
+                case "@Method": $arguments[$i] = Annotations::T_METHOD; break;
+                case "@Function": $arguments[$i] = Annotations::T_FUNCTION; break;
+                default: $arguments[$i] = eval("return " . $arguments[$i] . ";");
+                }
+            }
             \array_unshift($arguments, array("Type" => $type, "Symbol" => $symbol));
             $objects[] = new $class(...$arguments);
         }
@@ -135,6 +151,7 @@ abstract class Annotations
             "Errors" => $errors
         ];
     }
+    /** @throws AnnotationException */
     static public function ForceUpdate()
     {
         foreach(\get_declared_classes() as $symbol)
@@ -152,6 +169,12 @@ abstract class Annotations
                 Annotations::GetAnnotations($symbol, self::T_FUNCTION);
         }
     }
+    static public function RegisterAnnotationClass(string $class, string... $types)
+    {
+        if($class[0] !== '\\')
+            $class = '\\' . $class;
+        self::$AnnotationClasses[$class] = $types;
+    }
     static public function RegisterAnnotationToIgnore(string $class)
     {
         self::$Ignore[] = $class;
@@ -162,7 +185,7 @@ abstract class Annotations
     }
 
     /** @PHOC\UnitTest */
-    static public function __UnitTest()
+    static private function __UnitTest()
     {
         //One Annotation
         $code = "

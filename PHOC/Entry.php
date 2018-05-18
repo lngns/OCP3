@@ -7,6 +7,7 @@
  */
 namespace PHOC;
 
+/** @PHOC\Annotation(@Method, @Function) */
 final class Entry
 {
     public function __construct(array $entity)

@@ -7,6 +7,7 @@
  */
 namespace PHOC;
 
+/** @PHOC\Annotation(@Field) */
 final class SessionVar
 {
     public function __construct(array $entity, string $field = NULL)

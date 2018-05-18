@@ -25,6 +25,7 @@ It is possible for the user to define such interfaces by annotating static metho
 
 Annotations are pieces of metadata about program's entities, more precisely classes, functions and fields.  
 A PHOC annotation is written inside a PHP "doc comment" and with the forms `@T` or `@T(Args)` where `T` is a class name and `Args` a list of comma-separated PHP expressions.  
+Instead of PHP expressions, an argument can be one of `@Class`, `@Field`, `@Method` or `@Function`, and it will be replaced by the appropriate `\PHOC\Annotations::T_*` constant.  
 To be recognized as such by the parser, an annotation must see its `@` character as the first on the current line, ignoring whitespaces, the first `*` character if there is one, and the first three chars `/**`.  
 Hence, these three examples are seen as annotations:  
 ```php
@@ -43,15 +44,56 @@ In the case another annotation parser is used, such as PHPDoc, it is possible to
 By default, the `@noinspection`, `@return`, `@param`, `@var` and `@throws` annotations are ignored.  
 When an annotation is recognized, an object of the associated class name will be created with a map containing the entity's identity, and the passed arguments, passed to the constructor.  
 The map is of the form `["Type" => string, "Symbol" => string]` where `Type` is one of `\PHOC\Annotations::T_CLASS`, `::T_FIELD`, `::T_METHOD` or `::T_FUNCTION`.  
-In the case the indicated class does not exist, a `\PHOC\AnnotationException` is raised. Such exceptions are not meant to be caught.  
+In the case the indicated class does not exist or is not a valid annotation class, a `\PHOC\AnnotationException` is raised. Such exceptions are not meant to be caught.  
 Again, as annotation deduction is triggered by the autoloader, it is a non-deterministic process.  
 
 By default, PHOC comes with the following pre-defined annotation classes:  
+- **`\PHOC\Annotation`** - classes annotated this, are resolvable annotations.  
 - **`\PHOC\ClassInit`** - static methods annotated this way are called during class initialization, and are intended to initialize static fields.  
-- **`\PHOC\Entry`** - defines the program' entry points.  
+- **`\PHOC\Entry`** - defines the program' entry point.  
 - **`\PHOC\Route(string)`** - defines a route inside a web interface.  
 - **`\PHOC\SessionVar([string])`** - defines a session handle - an object used to access a `$_SESSION` member. The member can be specified through the argument, or is the field name by default.  
 - **`\PHOC\UnitTest`** - static methods annotated this are called, but only in debug mode, and are intended to perform tests.  
+
+To be a valid annotation class, a class must be annotated `@PHOC\Annotation` with the desired entity types as argument.  
+Ex (note the use of the short `@Method` syntax):  
+```php
+<?php
+namespace MyApp;
+
+/** @PHOC\Annotation(\PHOC\Annotations::T_FUNCTION, @Method) */
+final class MyAnnotation
+{
+    private $message;
+    
+    public function __construct(array $entity, string $message)
+    {
+        $this->message = $message;
+    }
+    public function GetMessage(): string
+    {
+        return $this->message;
+    }
+}
+```
+The above annotation can now be used this way:
+```php
+<?php
+namespace MyApp;
+
+abstract class MyProgram
+{
+    /** @MyApp\MyAnnotation("Hello World!") */
+    public function Foo() {}
+    
+    /** @PHOC\Entry */
+    static public function Main()
+    {
+        echo(\PHOC\Annotations::GetAnnotations("\MyApp\MyProgram::Foo")[0]->GetMessage());
+        //Expected output: Hello World!
+    }
+}
+```
 
 
 ## XML Templating
