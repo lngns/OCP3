@@ -48,7 +48,7 @@ In the case the indicated class does not exist or is not a valid annotation clas
 Again, as annotation deduction is triggered by the autoloader, it is a non-deterministic process.  
 
 By default, PHOC comes with the following pre-defined annotation classes:  
-- **`\PHOC\Annotation`** - classes annotated this, are resolvable annotations.  
+- **`\PHOC\Annotation(string...)`** - classes annotated this, are resolvable annotations.  
 - **`\PHOC\ClassInit`** - static methods annotated this way are called during class initialization, and are intended to initialize static fields.  
 - **`\PHOC\Entry`** - defines the program' entry point.  
 - **`\PHOC\Route(string)`** - defines a route inside a web interface.  
@@ -95,6 +95,10 @@ abstract class MyProgram
 }
 ```
 
+
+## Web Interfaces
+
+...
 
 ## XML Templating
 
