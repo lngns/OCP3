@@ -55,8 +55,8 @@ By default, PHOC comes with the following pre-defined annotation classes:
 - **`\PHOC\SessionVar([string])`** - defines a session handle - an object used to access a `$_SESSION` member. The member can be specified through the argument, or is the field name by default.  
 - **`\PHOC\UnitTest`** - static methods annotated this are called, but only in debug mode, and are intended to perform tests.  
 
-To be a valid annotation class, a class must be annotated `@PHOC\Annotation` with the desired entity types as argument.  
-Ex (note the use of the short `@Method` syntax):  
+To be a valid annotation class, a class must be annotated `@PHOC\Annotation` with the desired entity types as arguments.  
+Ex (note the use of both the long PHP expression and the short `@Method` syntax):  
 ```php
 <?php
 namespace MyApp;
