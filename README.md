@@ -14,7 +14,7 @@ From here, the runtime first declares a standard autoloader, then autoload the s
 Notably, the PHOC's autoloader has the additional role of automatically querying the loaded class' annotations.  
 
 Annotations' constructors will, by themselves, run code, but it is also possible for users to annotate static functions `@PHOC\ClassInit`, in which case such functions will be called to initialize their class.  
-As annotation deduction is triggered by the autoloader, it is a non-deterministic process.
+As annotation deduction is triggered by the autoloader, it is a non-deterministic process.  
 Inside the entry class must be defined a static function annotated `@PHOC\Entry`. Only one entry function is allowed per program.  
 This function will then be called by the runtime.  
 The runtime's initialization role stops there, and it is then up to the user to interact with PHOC.  
