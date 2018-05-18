@@ -11,7 +11,7 @@ abstract class Configuration
 {
     static private $Configuration;
 
-    /** @PHOC\ClassInit */
+    /** @ClassInit */
     static public function __Init()
     {
         if(!self::$Configuration)

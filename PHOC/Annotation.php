@@ -7,7 +7,7 @@
  */
 namespace PHOC;
 
-/** @PHOC\Annotation(@Class) */
+/** @Annotation(@Class) */
 final class Annotation
 {
     private $Types;

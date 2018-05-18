@@ -7,7 +7,7 @@
  */
 namespace PHOC;
 
-/** @PHOC\Annotation(@Method, @Function) */
+/** @Annotation(@Method, @Function) */
 final class UnitTest
 {
     public function __construct(array $entity)
@@ -26,12 +26,12 @@ final class UnitTest
     }
 
     static private $_utTest;
-    /** @PHOC\UnitTest */
+    /** @UnitTest */
     static public function __Dummy()
     {
         self::$_utTest = 42;
     }
-    /** @PHOC\UnitTest */
+    /** @UnitTest */
     static public function __UnitTest()
     {
         assert(self::$_utTest === 42);

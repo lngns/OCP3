@@ -53,7 +53,7 @@ abstract class Template
         };
     }
 
-    /** @PHOC\UnitTest */
+    /** @UnitTest */
     static public function __UnitTest()
     {
         assert(self::Compile("<phoc:if is=\"\$foo === 42\">Hello</phoc:if>") === "<?php if(\$foo === 42): ?>Hello<?php endif; ?>");

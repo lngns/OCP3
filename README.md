@@ -43,9 +43,11 @@ Only one annotation is allowed per line inside one doc comment, and all other in
 In the case another annotation parser is used, such as PHPDoc, it is possible to register key annotations to ignore with the `\PHOC\Annotations::RegisterAnnotationToIgnore(string): void` and `::RegisterAnnotationsToIgnore(string...): void` functions.  
 By default, the `@noinspection`, `@return`, `@param`, `@var` and `@throws` annotations are ignored.  
 When an annotation is recognized, an object of the associated class name will be created with a map containing the entity's identity, and the passed arguments, passed to the constructor.  
+If the class name is not absolute, the engine will first search for the class inside the entity's namespace, then in the global namespace. PHP `use` statement are not considered.  
 The map is of the form `["Type" => string, "Symbol" => string]` where `Type` is one of `\PHOC\Annotations::T_CLASS`, `::T_FIELD`, `::T_METHOD` or `::T_FUNCTION`.  
 In the case the indicated class does not exist or is not a valid annotation class, a `\PHOC\AnnotationException` is raised. Such exceptions are not meant to be caught.  
 Again, as annotation deduction is triggered by the autoloader, it is a non-deterministic process.  
+When an annotation is encountered
 
 By default, PHOC comes with the following pre-defined annotation classes:  
 - **`\PHOC\Annotation(string...)`** - classes annotated this, are resolvable annotations.  
@@ -80,16 +82,17 @@ The above annotation can now be used this way:
 ```php
 <?php
 namespace MyApp;
+use \PHOC\Annotations;
 
 abstract class MyProgram
 {
-    /** @MyApp\MyAnnotation("Hello World!") */
+    /** @MyAnnotation("Hello World!") */
     public function Foo() {}
     
     /** @PHOC\Entry */
     static public function Main()
     {
-        echo(\PHOC\Annotations::GetAnnotations("\MyApp\MyProgram::Foo")[0]->GetMessage());
+        echo(Annotations::GetAnnotations("\MyApp\MyProgram::Foo")[0]->GetMessage());
         //Expected output: Hello World!
     }
 }

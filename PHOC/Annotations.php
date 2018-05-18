@@ -50,10 +50,24 @@ abstract class Annotations
             $class = $annotation["Class"];
             if(\in_array($class, self::$Ignore))
                 continue;
-            if(!\class_exists($class))
-                throw new AnnotationException("Class " . $class . " does not exist.");
-            if($class[0] !== '\\')
-                $class = '\\' . $class;
+            $found = false;
+            //if the symbol is not absolute, search in its own namespace
+            if($class[0] !== '\\' && ($lastNsPos = \strrpos($symbol, '\\', 1)) !== false)
+            {
+                $namespace = \substr($symbol, 0, $lastNsPos);
+                $class = $namespace . '\\' . $annotation["Class"];
+                if(\class_exists($class))
+                    $found = true;
+            }
+            //else, try searching the global scope
+            if(!$found)
+            {
+                $class = $annotation["Class"];
+                if($class[0] !== '\\')
+                    $class = '\\' . $class;
+                if(!\class_exists($class))
+                    throw new AnnotationException("Class " . $class . " does not exist.");
+            }
             if(!\in_array($class, \array_keys(self::$AnnotationClasses)))
                 throw new AnnotationException("Class " . $class . " is not an annotation class.");
             if(!\in_array($type, self::$AnnotationClasses[$class]))
@@ -184,7 +198,7 @@ abstract class Annotations
         self::$Ignore = \array_merge(self::$Ignore, $classes);
     }
 
-    /** @PHOC\UnitTest */
+    /** @UnitTest */
     static private function __UnitTest()
     {
         //One Annotation

@@ -7,7 +7,7 @@
  */
 namespace PHOC;
 
-/** @PHOC\Annotation(@Method) */
+/** @Annotation(@Method) */
 final class ClassInit
 {
     public function __construct($entity)

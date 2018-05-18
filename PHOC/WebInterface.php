@@ -12,7 +12,7 @@ abstract class WebInterface
     static private $Interfaces = [];
     static private $ErrorHandler;
 
-    /** @PHOC\ClassInit */
+    /** @ClassInit */
     static public function __Init()
     {
         if(!self::$ErrorHandler)
@@ -105,7 +105,7 @@ abstract class WebInterface
         return ["Route" => 404, "Params" => []];
     }
 
-    /** @PHOC\UnitTest */
+    /** @UnitTest */
     static public function __UnitTest()
     {
         assert(self::Match("/foo/bar", ["/foo/bar" => NULL, "/" => NULL]) === ["Route" => "/foo/bar", "Params" => []]);
