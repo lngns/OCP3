@@ -16,6 +16,7 @@ abstract class Annotations
     static private $List = array();
     static private $Ignore = array();
 
+    /** @throws \PHOC\AnnotationException, \InvalidArgumentException */
     static public function GetAnnotations(string $symbol, string $type = self::T_CLASS): array
     {
         if($symbol[0] !== '\\')
@@ -49,7 +50,7 @@ abstract class Annotations
             if(\in_array($class, self::$Ignore))
                 continue;
             if(!\class_exists($class))
-                throw new \UnexpectedValueException("Class " . $class . " does not exist.");
+                throw new AnnotationException("Class " . $class . " does not exist.");
             $arguments = $annotation["Arguments"];
             $len = \count($arguments);
             for($i = 0; $i < $len; ++$i)
