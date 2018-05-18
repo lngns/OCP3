@@ -44,7 +44,14 @@ By default, the `@noinspection`, `@return`, `@param`, `@var` and `@throws` annot
 When an annotation is recognized, an object of the associated class name will be created with a map containing the entity's identity, and the passed arguments, passed to the constructor.  
 The map is of the form `["Type" => string, "Symbol" => string]` where `Type` is one of `\PHOC\Annotations::T_CLASS`, `::T_FIELD`, `::T_METHOD` or `::T_FUNCTION`.  
 In the case the indicated class does not exist, a `\PHOC\AnnotationException` is raised. Such exceptions are not meant to be caught.  
-Again, as annotation deduction is triggered by the autoloader, it is a non-deterministic process.
+Again, as annotation deduction is triggered by the autoloader, it is a non-deterministic process.  
+
+By default, PHOC comes with the following pre-defined annotation classes:  
+- **`\PHOC\ClassInit`** - static methods annotated this way are called during class initialization, and are intended to initialize static fields.  
+- **`\PHOC\Entry`** - defines the program' entry points.  
+- **`\PHOC\Route(string)`** - defines a route inside a web interface.  
+- **`\PHOC\SessionVar([string])`** - defines a session handle - an object used to access a `$_SESSION` member. The member can be specified through the argument, or is the field name by default.  
+- **`\PHOC\UnitTest`** - static methods annotated this are called, but only in debug mode, and are intended to perform tests.  
 
 
 ## XML Templating
