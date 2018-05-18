@@ -13,6 +13,15 @@ PHOC projects configure their HTTP server to redirect all requests to a single `
 From here, the runtime first declares a standard autoloader, then autoload the so-called "entry class", as defined in the `configuration.xml` file.  
 Notably, the PHOC's autoloader has the additional role of automatically querying the loaded class' annotations.  
 
+Annotations' constructors will, by themselves, run code, but it is also possible for users to annotate a static function `@PHOC\ClassInit`, in which case such functions will be called to initialize their class.  
+Inside the entry class must be defined a static function annotated `@PHOC\Entry`.  
+This function will then be called by the runtime.  
+The runtime's initialization role stops there, and it is then up to the user to interact with PHOC.  
+One natural pattern in web development is the definition of "web interfaces," classes containing "route handlers."  
+It is possible for the user to define such interfaces by annotating static methods `@PHOC\Route` and dispatching a request over an interface with the `\PHOC\WebInterface` class.
+
+## Annotations
+
 Annotations are pieces of metadata about program's entities, more precisely classes, functions and fields.  
 A PHOC annotation is written inside a PHP "doc comment" and with the forms `@T` or `@T(Args)` where `T` is a class name and `Args` a list of comma-separated PHP expressions.  
 To be recognized as such by the parser, an annotation must see its `@` character as the first on the current line, ignoring whitespaces, the first `*` character if there is one, and the first three chars `/**`.  
