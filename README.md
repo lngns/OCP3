@@ -15,7 +15,7 @@ Notably, the PHOC's autoloader has the additional role of automatically querying
 
 Annotations are pieces of metadata about program's entities, more precisely classes, functions and fields.  
 A PHOC annotation is written inside a PHP "doc comment" and with the forms `@T` or `@T(Args)` where `T` is a class name and `Args` a list of comma-separated PHP expressions.  
-To be recognized as such by the parser, an annotation must see its '@' character as the first on the current line, ignoring whitespaces, the first `*` character if there is one, and the first three chars `/**`.  
+To be recognized as such by the parser, an annotation must see its `@` character as the first on the current line, ignoring whitespaces, the first `*` character if there is one, and the first three chars `/**`.  
 Hence, these three examples are seen as annotations:  
 ```php
 /** @Foo */
@@ -30,6 +30,12 @@ Hence, these three examples are seen as annotations:
  * @Baz
  */
 ```
+Only one annotation is allowed per line inside one doc comment, and all other information is ignored.  
+In the case another annotation parser is used, such as PHPDoc, it is possible to register key annotations to ignore with the `\PHOC\Annotations::RegisterAnnotationToIgnore(string): void` and `\PHOC\Annotations::RegisterAnnotationsToIgnore(string...): void` functions.  
+When an annotation is recognized, an object of the associated class name will be created with a map containing the entity's identity, and the passed argument, passed to the constructor.  
+The map is of the form `["Type" => string, "Symbol" => string]` where `Type` is one of `\PHOC\Annotations::T_CLASS`, `::T_FIELD`, `::T_METHOD` or `::T_FUNCTION`.  
+In the case the indicated class does not exist, a `\PHOC\AnnotationException` is raised. Such exceptions are not meant to be caught.    
+As annotation deduction is triggered by the autoloader, it is a non-deterministic process.
 
 
 ## XML Templating
