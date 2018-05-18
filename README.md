@@ -13,11 +13,12 @@ PHOC projects configure their HTTP server to redirect all requests to a single `
 From here, the runtime first declares a standard autoloader, then autoload the so-called "entry class", as defined in the `configuration.xml` file.  
 Notably, the PHOC's autoloader has the additional role of automatically querying the loaded class' annotations.  
 
-Annotations' constructors will, by themselves, run code, but it is also possible for users to annotate a static function `@PHOC\ClassInit`, in which case such functions will be called to initialize their class.  
-Inside the entry class must be defined a static function annotated `@PHOC\Entry`.  
+Annotations' constructors will, by themselves, run code, but it is also possible for users to annotate static functions `@PHOC\ClassInit`, in which case such functions will be called to initialize their class.  
+As annotation deduction is triggered by the autoloader, it is a non-deterministic process.
+Inside the entry class must be defined a static function annotated `@PHOC\Entry`. Only one entry function is allowed per program.  
 This function will then be called by the runtime.  
 The runtime's initialization role stops there, and it is then up to the user to interact with PHOC.  
-One natural pattern in web development is the definition of "web interfaces," classes containing "route handlers."  
+One natural pattern in web development is the definition of "web interfaces" - classes containing "route handlers."  
 It is possible for the user to define such interfaces by annotating static methods `@PHOC\Route` and dispatching a request over an interface with the `\PHOC\WebInterface` class.
 
 ## Annotations
@@ -42,8 +43,8 @@ In the case another annotation parser is used, such as PHPDoc, it is possible to
 By default, the `@noinspection`, `@return`, `@param`, `@var` and `@throws` annotations are ignored.  
 When an annotation is recognized, an object of the associated class name will be created with a map containing the entity's identity, and the passed arguments, passed to the constructor.  
 The map is of the form `["Type" => string, "Symbol" => string]` where `Type` is one of `\PHOC\Annotations::T_CLASS`, `::T_FIELD`, `::T_METHOD` or `::T_FUNCTION`.  
-In the case the indicated class does not exist, a `\PHOC\AnnotationException` is raised. Such exceptions are not meant to be caught.    
-As annotation deduction is triggered by the autoloader, it is a non-deterministic process.
+In the case the indicated class does not exist, a `\PHOC\AnnotationException` is raised. Such exceptions are not meant to be caught.  
+Again, as annotation deduction is triggered by the autoloader, it is a non-deterministic process.
 
 
 ## XML Templating
