@@ -11,6 +11,7 @@ abstract class Template
 {
     static private $Transformations = [
         "Pattern" => [
+            "/\<phoc:!--(.*)--\/?\>/sU",
             "/\<phoc:if\s+is=\"(.*)\"\>(.*)\<phoc:else\s*\/?\>(.*)\<\/phoc:if\>/sU",
             "/\<phoc:if\s+is=\"(.*)\"\>(.*)\<\/phoc:if\>/sU",
             "/\<phoc:for\s+each=\"(.*)\"\s+as=\"(.*)\"\>(.*)\<\/phoc:for\>/sU",
@@ -21,6 +22,7 @@ abstract class Template
             "/\<(.*)=\"(.*)\{phoc:base-url\s*\/?\}(.*)\"(.*)\>/U"
         ],
         "Replace" => [
+            "",
             "<?php if($1): ?>$2<?php else: ?>$3<?php endif; ?>",
             "<?php if($1): ?>$2<?php endif; ?>",
             "<?php foreach($1 as $2): ?>$3<?php endforeach; ?>",
@@ -51,7 +53,7 @@ abstract class Template
         };
     }
 
-    /** @PHOC\UnitTest */
+    /** @UnitTest */
     static public function __UnitTest()
     {
         assert(self::Compile("<phoc:if is=\"\$foo === 42\">Hello</phoc:if>") === "<?php if(\$foo === 42): ?>Hello<?php endif; ?>");

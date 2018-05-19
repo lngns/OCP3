@@ -11,7 +11,7 @@ abstract class Environment
 {
     static private $Environment;
 
-    /** @PHOC\ClassInit */
+    /** @ClassInit */
     static public function __Init()
     {
         if(!self::$Environment)

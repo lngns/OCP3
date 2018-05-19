@@ -7,6 +7,7 @@
  */
 namespace PHOC;
 
+/** @Annotation(@Method, @Function) */
 final class UnitTest
 {
     public function __construct(array $entity)
@@ -14,17 +15,23 @@ final class UnitTest
         if($entity["Type"] !== Annotations::T_CLASS && $entity["Type"] !== Annotations::T_FIELD)
         {
             if(Environment::Debug())
-                \call_user_func($entity["Symbol"]);
+            {
+                $parts = \explode("::", $entity["Symbol"]);
+                /** @noinspection PhpUnhandledExceptionInspection */
+                $method = new \ReflectionMethod($parts[0], $parts[1]);
+                $method->setAccessible(true);
+                $method->invoke(NULL);
+            }
         }
     }
 
     static private $_utTest;
-    /** @PHOC\UnitTest */
+    /** @UnitTest */
     static public function __Dummy()
     {
         self::$_utTest = 42;
     }
-    /** @PHOC\UnitTest */
+    /** @UnitTest */
     static public function __UnitTest()
     {
         assert(self::$_utTest === 42);

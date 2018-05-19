@@ -7,6 +7,7 @@
  */
 namespace PHOC;
 
+/** @Annotation(@Field) */
 final class SessionVar
 {
     public function __construct(array $entity, string $field = NULL)
@@ -48,10 +49,10 @@ final class SessionVar
         }
     }
 
-    /** @PHOC\SessionVar("__phoc_sv_utTest") */
+    /** @SessionVar("__phoc_sv_utTest") */
     static private $data;
 
-    /** @PHOC\UnitTest */
+    /** @UnitTest */
     static public function __UnitTest()
     {
         $_SESSION["__phoc_sv_utTest"] = 42;

@@ -7,6 +7,7 @@
  */
 namespace PHOC;
 
+/** @Annotation(@Method) */
 final class Route
 {
     public function __construct(array $entity, string $route)

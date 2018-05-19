@@ -3,6 +3,7 @@
 <phoc:for each="$Articles" as="$article">
     <div>
         <h4>
+            <phoc:!-- any PHP expression is valid inside PHOC attributes --/>
             <phoc:def url="\preg_replace('/\s/', '-', $article->Title) . '.' . $article->Id"/>
             <a href="{phoc:base-url}/article/{phoc:out var='$url'}">
                 <phoc:out var="$article->Title" />

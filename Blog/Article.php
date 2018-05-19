@@ -93,4 +93,12 @@ final class Article
         $stmt->bindParam(4, $id, \PDO::PARAM_INT);
         $stmt->execute();
     }
+    static public function DeleteArticle(int $id)
+    {
+        $stmt = BlogMain::GetSqlConnection()->prepare(
+            "DELETE FROM articles WHERE id = ?"
+        );
+        $stmt->bindParam(1, $id, \PDO::PARAM_INT);
+        $stmt->execute();
+    }
 }

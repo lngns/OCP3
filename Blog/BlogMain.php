@@ -52,6 +52,7 @@ class BlogMain
     /** @PHOC\Route(404) */
     static public function Error404()
     {
+        \header("HTTP/1.0 404 Page Not Found");
         echo("Error 404. Page Not Found");
     }
     /** @PHOC\Route("/archives/{i}") */

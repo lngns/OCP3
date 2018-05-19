@@ -27,6 +27,7 @@ abstract class Runtime
     {
         return self::$Configuration;
     }
+    /** @throws AnnotationException */
     static public function Autoload(string $classname)
     {
         $class = \ltrim($classname, "\\");
@@ -45,6 +46,7 @@ abstract class Runtime
             Annotations::GetAnnotations($classname, Annotations::T_CLASS);
         }
     }
+    /** @throws AnnotationException */
     static public function Start()
     {
         \error_reporting(E_ALL);
@@ -53,9 +55,7 @@ abstract class Runtime
 
         $configuration = \simplexml_load_file("." . DIRECTORY_SEPARATOR . "configuration.xml");
         self::$Configuration = $configuration;
-
-        Annotations::RegisterAnnotationsToIgnore("noinspection", "return", "param", "var", "throws");
-
+      
         self::Autoload(Configuration::EntryClass());
 
         if(!self::$EntryPoint)
