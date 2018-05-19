@@ -110,8 +110,8 @@ The available placeholders are:
 - **`{*}`** - wildcard.
 
 Ex:  
-`/user/{i}` will match the URI `/user/42` and will passe 42 to the controller.  
-`/node/{a}/static/{*}` will match the URI `/node/october/static/surpised-seal.gif` and pass 42 and `surprised-seal.gif` to the controller.
+`/user/{i}` will match the URI `/user/42` and will pass 42 to the controller.  
+`/node/{a}/static/{*}` will match the URI `/node/october/static/surprised-seal.gif` and pass 42 and `surprised-seal.gif` to the controller.
 
 Such routes can be implemented this way:
 ```php
