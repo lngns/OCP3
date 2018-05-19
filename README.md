@@ -186,7 +186,7 @@ namespace phoc
     node `for`
     {
         array each;
-        any as;
+        any& as;
         xml _body;
     };
     
@@ -211,4 +211,37 @@ namespace phoc
     //outputs the project's base url.
     node `base-url` {};
 }
+```
+
+Ex:
+```xml
+<phoc:include file="header.html" />
+
+<phoc:for each="$Articles" as="$article">
+    <div>
+        <h4>
+            <phoc:def url="\preg_replace('/\s+/', '-', $article->Title) . '.' . $article->Id" />
+            <a href="{phoc:base-url}/article/{phoc:out var='$url'}">
+                <phoc:out var="$article->Title" />
+            </a>
+        </h4>
+        <small><phoc:out var="$article->Date" /></small>
+        <p>
+            <phoc:out var="$article->Abstract" />... <a href="{phoc:base-url}/article/{phoc:out var='$url'}">Continue Reading</a>
+        </p>
+    </div>
+</phoc:for>
+
+<phoc:if is="$PageId !== 0">
+    <a href="{phoc:base-url}/archives/{phoc:out var='$PageId-1'}">
+        Previous
+    </a>
+</phoc:if>
+<phoc:if is="\count($Articles) === 5 && $Articles[4]->Id !== $FirstId">
+    <a href="{phoc:base-url"}/archives/{phoc:out var='$PageId+1'}">
+        Next
+    </a>
+</phoc:if>
+
+<phoc:include file="footer.html" />
 ```
