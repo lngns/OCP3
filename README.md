@@ -131,7 +131,7 @@ class MyWebInterface
 }
 ```
 
-When a variable URI is desired without an actual parameter, it is posible to add a `?` character after the placeholder symbol.  
+When a variable URI is desired without an actual parameter, it is possible to add a `?` character after the placeholder symbol.  
 Ex:
 ```php
 class MyOtherWebInterface
@@ -151,6 +151,7 @@ The second parameter is the URI to match against. It is by default the value of 
 
 The route handlers are matched against the URI in their order of declaration, and deduction is therefore not based on specialization.  
 It means that if two handlers are declared in this order: `/{*}`, `/foo`, then a URI `/foo` will match the first route.  
+Lastly, instead of a URI pattern, the number `404` can be passed as annotation argument, in which case the function will be called if no other is selected during dispatch.  
 
 
 ## XML Templating
