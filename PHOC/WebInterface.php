@@ -66,9 +66,12 @@ abstract class WebInterface
         $match = self::Match($request, self::$Interfaces[$interface]);
         if($match["Route"] === 404)
         {
-            \header("HTTP/1.0 404 Page Not Found");
+            //\header("HTTP/1.0 404 Page Not Found"); //responsibility moved to the user
             if(!isset(self::$Interfaces[$interface][404]))
+            {
+                \header("HTTP/1.0 404 Page Not Found");
                 echo("Error 404. Page Not Found.");
+            }
             else
                 \call_user_func(self::$Interfaces[$interface][404]);
         }

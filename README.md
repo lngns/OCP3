@@ -47,12 +47,11 @@ If the class name is not absolute, the engine will first search for the class in
 The map is of the form `["Type" => string, "Symbol" => string]` where `Type` is one of `\PHOC\Annotations::T_CLASS`, `::T_FIELD`, `::T_METHOD` or `::T_FUNCTION`.  
 In the case the indicated class does not exist or is not a valid annotation class, a `\PHOC\AnnotationException` is raised. Such exceptions are not meant to be caught.  
 Again, as annotation deduction is triggered by the autoloader, it is a non-deterministic process.  
-When an annotation is encountered
 
 By default, PHOC comes with the following pre-defined annotation classes:  
 - **`\PHOC\Annotation(string...)`** - classes annotated this, are resolvable annotations.  
 - **`\PHOC\ClassInit`** - static methods annotated this way are called during class initialization, and are intended to initialize static fields.  
-- **`\PHOC\Entry`** - defines the program' entry point.  
+- **`\PHOC\Entry`** - defines the program's entry point.  
 - **`\PHOC\Route(string)`** - defines a route inside a web interface.  
 - **`\PHOC\SessionVar([string])`** - defines a session handle - an object used to access a `$_SESSION` member. The member can be specified through the argument, or is the field name by default.  
 - **`\PHOC\UnitTest`** - static methods annotated this are called, but only in debug mode, and are intended to perform tests.  
@@ -101,12 +100,66 @@ abstract class MyProgram
 
 ## Web Interfaces
 
-...
+PHOC's web interfaces are simple classes containing route handlers, or controllers.  
+The classes by themselves are not recognized in any special ways, but the controllers are to be annotated `@PHOC\Route`.  
+The `\PHOC\Route` constructor accepts a single string argument: a URI pattern.  
+URI patterns can have multiple placeholders, that are then passed to the controller with the gathered value when a request is dispatched.  
+The available placeholders are:  
+- **`{i}`** - decimal integer number.
+- **`{a}`** - alphanumeric string (RegExp `[a-zA-Z0-9_]+`).
+- **`{*}`** - wildcard.
+
+Ex:  
+`/user/{i}` will match the URI `/user/42` and will passe 42 to the controller.  
+`/node/{a}/static/{*}` will match the URI `/node/october/static/surpised-seal.gif` and pass 42 and `surprised-seal.gif` to the controller.
+
+Such routes can be implemented this way:
+```php
+class MyWebInterface
+{
+    /** @PHOC\Route("/user/{i}") */
+    static public function User(int $i)
+    {
+        echo("requesting user page for user " . $i);
+    }
+    
+    /** @PHOC\Route("/node/{a}/static/{*}") */
+    static public function NodeStatic(string $node, string $file)
+    {
+        echo("requesting file " . $file . " from node " . $node);
+    }
+}
+```
+
+When a variable URI is desired without an actual parameter, it is posible to add a `?` character after the placeholder symbol.  
+Ex:
+```php
+class MyOtherWebInterface
+{
+    /** @PHOC\Route("/article/{*?}.{i}") */
+    static public function Article(int $id)
+    {
+        //the first placeholder may be used for making pretty URLs
+        echo("Requesting article id " . $id);
+    }
+}
+```
+
+Dispatching a request over an interface is done with `\PHOC\WebInterface::Dispatch(string, [string]): void`.  
+The first parameter is the name of the class to dispatch over. It is an error to dispatch over a class that doesn't have any route handlers.  
+The second parameter is the URI to match against. It is by default the value of `$_SERVER["REQUEST_URI"]`.  
+
+The route handlers are matched against the URI in their order of declaration, and deduction is therefore not based on specialization.  
+It means that if two handlers are declared in this order: `/{*}`, `/foo`, then a URI `/foo` will match the first route.  
+
 
 ## XML Templating
 
 PHOC supports a form of pseudo-XML templating including multiple XML tags.  
 It is "pseudo-XML" as no actual XML declaration is needed and the processor is happy manipulating HTML documents.  
+It is possible to compile a file to HTML/PHP with the `\PHOC\Template::RenderFile(string): callable([array])` function.  
+The returned delegate can then be called to execute the generated PHP code. If an array is passed to it, its values will be extracted into the local scope for use by the template.  
+
 These special tags reside inside the `phoc` XML namespace.  
 Among them are two tags dedicated to outputing content. They are also accepted inside strings with curly brackets instead of angled brackets.  
 In the case there are inside a string, then double quotes must be changed to single quotes, to match regular XML code.  
