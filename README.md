@@ -159,7 +159,7 @@ Lastly, instead of a URI pattern, the number `404` can be passed as annotation a
 PHOC supports a form of pseudo-XML templating including multiple XML tags.  
 It is "pseudo-XML" as no actual XML declaration is needed and the processor is happy manipulating HTML documents.  
 It is possible to compile a file to HTML/PHP with the `\PHOC\Template::RenderFile(string): callable([array])` function.  
-The returned delegate can then be called to execute the generated PHP code. If an array is passed to it, its indexes will be extracted into the local scope for use by the template.  
+The returned delegate can then be called to execute the generated PHP code. If an array is passed to it, its indices will be extracted into the local scope for use by the template.  
 
 These special tags reside inside the `phoc` XML namespace.  
 Among them are two tags dedicated to outputing content. They are also accepted inside strings with curly brackets instead of angled brackets.  
