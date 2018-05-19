@@ -227,7 +227,8 @@ Ex:
         </h4>
         <small><phoc:out var="$article->Date" /></small>
         <p>
-            <phoc:out var="$article->Abstract" />... <a href="{phoc:base-url}/article/{phoc:out var='$url'}">Continue Reading</a>
+            <phoc:out var="$article->Abstract" />... 
+            <a href="{phoc:base-url}/article/{phoc:out var='$url'}">Continue Reading</a>
         </p>
     </div>
 </phoc:for>
