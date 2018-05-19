@@ -238,7 +238,7 @@ Ex:
     </a>
 </phoc:if>
 <phoc:if is="\count($Articles) === 5 && $Articles[4]->Id !== $FirstId">
-    <a href="{phoc:base-url"}/archives/{phoc:out var='$PageId+1'}">
+    <a href="{phoc:base-url}/archives/{phoc:out var='$PageId+1'}">
         Next
     </a>
 </phoc:if>
