@@ -174,7 +174,7 @@ They can be expressed as the RegExp `/\<phoc:!--(.*)--\/?\>/sU` _(note the last 
 namespace phoc
 {
     //if the expression passed to `is` is true, then the body is evaluated.
-    //Otherwise, in the case a `phoc:else` tag is present in the body, the code following it is evaluated.
+    //otherwise, in the case a `phoc:else` tag is present in the body, the code following it is evaluated.
     node `if`
     {
         bool is;
