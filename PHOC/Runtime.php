@@ -55,7 +55,7 @@ abstract class Runtime
 
         $configuration = \simplexml_load_file("." . DIRECTORY_SEPARATOR . "configuration.xml");
         self::$Configuration = $configuration;
-
+      
         self::Autoload(Configuration::EntryClass());
 
         if(!self::$EntryPoint)
