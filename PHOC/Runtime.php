@@ -31,12 +31,12 @@ abstract class Runtime
     static public function Autoload(string $classname)
     {
         $class = \ltrim($classname, "\\");
-        $file = "";
+        $file = ".." . DIRECTORY_SEPARATOR;
         if(($lastNsPos = \strrpos($class, "\\")) !== false)
         {
             $namespace = \substr($class, 0, $lastNsPos);
             $class     = \substr($class, $lastNsPos + 1);
-            $file  = \str_replace("\\", DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
+            $file     .= \str_replace("\\", DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
         }
         $file .= $class . ".php";
         if(\file_exists($file))
@@ -53,9 +53,9 @@ abstract class Runtime
         \ini_set("display_errors", 1);
         \spl_autoload_register("\\PHOC\\Runtime::Autoload");
 
-        $configuration = \simplexml_load_file("." . DIRECTORY_SEPARATOR . "configuration.xml");
+        $configuration = \simplexml_load_file(".." . DIRECTORY_SEPARATOR . "configuration.xml");
         self::$Configuration = $configuration;
-      
+
         self::Autoload(Configuration::EntryClass());
 
         if(!self::$EntryPoint)

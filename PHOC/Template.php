@@ -44,7 +44,7 @@ abstract class Template
         if($file[0] !== '/')
             $file = '/' . $file;
         /** @noinspection PhpUndefinedMethodInspection */
-        $file = Configuration::ResourceDirectory() . $file;
+        $file = Configuration::TemplateDirectory() . $file;
         if(!\file_exists($file))
             throw new IOException("File " . $file . " not found.");
         return function (array $env = []) use ($file) {

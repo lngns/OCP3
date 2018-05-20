@@ -82,7 +82,6 @@ abstract class WebInterface
     {
         foreach($routes as $route => $handler)
         {
-            //var_dump($route);
             if($route === "\\*")
                 return ["Route" => $route, "Params" => []];
             else if(\strpos($route, '{') === false && \strcmp($route, $request) === 0)
