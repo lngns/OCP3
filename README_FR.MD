@@ -9,23 +9,23 @@ Le projet a été testé avec Apache2, MySQL5 et PHP7 seulement.
 ## Control Flow
 
 Les programmes utilisant PHOC, tel que ce blog, suivent un flux de contrôle standard tournant autours de metadata, plus exactement, des annotations.  
-Les projets PHOC configurent leurs serveurs HTTP afin de rediriger toutes les requêtes sur un seul fichier `index.php`, qui démarre le runtime de PHOC avec la fonction `\PHOC\Runtime::Start`.  
-Le runtime déclare d'abords un autoloader standard, puis autoload la dénommé "entry class" (ou "class d'entrée") tel que définie dans le fichier `configuration.xml`.  
+Les projets PHOC configurent leurs serveurs HTTP afin de rediriger toutes les requêtes sur un seul fichier `index.php`, qui démarre le runtime de PHOC avec la fonction `\PHOC\Runtime::Start(void)`.  
+Le runtime déclare d'abords un autoloader standard, puis autoload la dénommée "entry class" (ou "class d'entrée") tel que définie dans le fichier `configuration.xml`.  
 Notablement, l'autoloader de PHOC a le rôle additionel d'automatiquement récupérer les annotations des classes chargées.  
 
-Les constructeurs d'annotations, par eux-mêmes, êxecute du code, mais il est également possible pour les utilisateurs d'annoter des fonctions statiques `@PHOC\ClassInit`, auquel cas, de tels fonctions seront appelées pour initialiser leurs classes.  
+Les constructeurs d'annotations, par eux-mêmes, êxecutent du code, mais il est également possible pour les utilisateurs d'annoter des fonctions statiques `@PHOC\ClassInit`, auquel cas, de telles fonctions seront appelées pour initialiser leurs classes.  
 Car la déduction d'annotation est enclenchée par l'autoloader, il s'agit d'un processus non-déterministe.  
 Dans la classe d'entrée doit être définie une fonction statique annotée `@PHOC\Entry`. Seulement un point d'entré est autorisé par programme.  
 La fonction est appelé par le runtime, stoppant ainsi son rôle d'initialisation.  
 Il est ensuite à l'utilisateur d'intéragir avec PHOC.  
 Un modèle naturel en développement web est la définition de "web interfaces" - des classes containant des "route handlers."  
-Il est possible à l'utilisateur de définir de telles interfaces en annotant des fonctions statiques `@PHOC\Route` et en dispatchant une requête sur une interface avec la classe `\PHOC\WebInterface`.
+Il est possible pour l'utilisateur de définir de telles interfaces en annotant des fonctions statiques `@PHOC\Route` et en dispatchant une requête sur une interface avec la classe `\PHOC\WebInterface`.
 
 ## Annotations
 
-Les annotations sont des morceaux de metadata à propos des entités d'un programme, plus précisement, des classes, fonctions et champs.  
-Une annotation de PHOC est écrite dans un "doc comment" de PHP et sous les formes `@T` ou `@T(Args)` où `T` est le nom d'une classe et `Args` une liste d'expression PHP séparé par des virgules.  
-Au lieu d'une expression, un argument peut être un parmis `@Class`, `@Field`, `@Method` et `@Function`, et sera remplacé par la constante `\PHOC\Annotations::T_*` appropriée.  
+Les annotations sont des morceaux de metadata décrivant des entités d'un programme, plus précisement, des classes, fonctions et champs.  
+Une annotation de PHOC est écrite dans un "doc comment" de PHP et sous les formes `@T` ou `@T(Args)` où `T` est le nom d'une classe et `Args` une liste d'expressions PHP séparées par des virgules.  
+Au lieu d'une expression, un argument peut être `@Class`, `@Field`, `@Method` ou `@Function`, et sera remplacé par la constante `\PHOC\Annotations::T_*` appropriée.  
 Afin d'être reconnue par le parseur, une annotation doit voir son charactère `@` être le premier sur la ligne, en ignorant les whitespaces, le première char `*` s'il y en a un, et les trois premiers charactères du commentaire `/**`.  
 Ainsi, ces trois exemples sont reconnues:  
 ```php
@@ -40,11 +40,11 @@ Ainsi, ces trois exemples sont reconnues:
  */
 ```
 Seulement une annotation est autorisée sur chaque ligne, et toute autre information est ignorée.  
-Dans le cas où un autre processeur d'annotation serait utilisé, tel que PHPDoc, il est possible d'enregistrer des annotations clés avec les fonctions `\PHOC\Annotations::RegisterAnnotationToIgnore(string): void` et `::RegisterAnnotationsToIgnore(string...): void`.  
+Dans le cas où un autre processeur d'annotation serait utilisé, tel que PHPDoc, il est possible d'enregistrer des annotations clées avec les fonctions `\PHOC\Annotations::RegisterAnnotationToIgnore(string): void` et `::RegisterAnnotationsToIgnore(string...): void`.  
 Par défault, les annotations `@noinspection`, `@return`, `@param`, `@var` et `@throws` sont ignorées.  
-Quand une annotation est reconnue, une instance de la classe associé est créé et une map contenant l'identité de l'entitée et les arguments passés, sont passés au constructeur.  
+Quand une annotation est reconnue, une instance de la classe associée est créée et une map contenant l'identité de l'entitée et les arguments passés, sont passés au constructeur.  
 Si le nom de la classe n'est pas absolu, le processeur cherchera d'abord la classe dans le namespace de l'entité, puis dans le namespace global. Les phrases `use` de PHP ne sont pas considérées.  
-La map est sous la forme `["Type" => string, "Symbol" => string]` où `Type` est l'un de `\PHOC\Annotations::T_CLASS`, `::T_FIELD`, `::T_METHOD` et `::T_FUNCTION`. 
+La map est sous la forme `["Type" => string, "Symbol" => string]` où `Type` est l'un de `\PHOC\Annotations::T_CLASS`, `::T_FIELD`, `::T_METHOD` et `::T_FUNCTION`.  
 Dans le cas où la classe indiquée n'existerais pas ou n'est pas une classe d'annotation valide, une `\PHOC\AnnotationException` est lancée. De telles exceptions ne sont pas prévues pour être capturées.  
 Encore une fois, car la déduction d'annotation est enclenchée par l'autoloader, il s'agit d'un processus non-déterministe.  
 
@@ -53,11 +53,11 @@ Par défault, PHOC viens avec les classes d'annotations pré-définies suivantes
 - **`\PHOC\ClassInit`** - les méthodes statiques annotées de cette façon sont appelées durant l'initialisation de classe, et sont prévues pour initialiser les champs statiques.  
 - **`\PHOC\Entry`** - définis le point d'entrée du programme.    
 - **`\PHOC\Route(string)`** - définis une route dans une interface web.  
-- **`\PHOC\SessionVar([string])`** - définis un handle de session - un object utilisé affin de manipuler un membre de `$_SESSION`. Le membre peut être spécifié à travers l'argument, ou est le nom du champ par défault.  
+- **`\PHOC\SessionVar([string])`** - initialise un champ avec un handle de session - un objet utilisé afin de manipuler un membre de `$_SESSION`. Le membre peut être spécifié à travers l'argument, ou est le nom du champ par défault.  
 - **`\PHOC\UnitTest`** - les méthodes statiques annotées ceci sont appelées, mais uniquement en mode de debug, et sont prévues pour éffectuer des tests.  
 
 Pour être une classe d'annotation valide, une classe doit être annotée `@PHOC\Annotation` avec les types d'entité désirés comme arguments.  
-Ex (notez l'utilisation d'à la fois la longue expression PHP, et la courte syntaxe `@Method`):  
+Ex (notez l'utilisation à la fois de la longue expression PHP, et de la courte syntaxe `@Method`):  
 ```php
 <?php
 namespace MyApp;
@@ -149,24 +149,24 @@ Dispatch une requête sur une interface est atteint avec `\PHOC\WebInterface::Di
 Le premier paramètre est le nom de la classe sur laquelle dispatch. Il s'agit d'une erreur de dispatch sur une classe n'ayant pas de processeurs de route.  
 Le second paramètre est l'URI contre laquelle match les routes. Sa valeur par défault est la valeur de `$_SERVER["REQUEST_URI"]`.  
 
-Les processeurs de routes sont matched contre l'URI dans leur ordre de déclaration. La déduction n'est ainsi pas basé sur leur spécialisation.  
+Les processeurs de route sont matched contre l'URI dans leur ordre de déclaration. La déduction n'est ainsi pas basée sur leur spécialisation.  
 Cela signifie que si deux processeurs sont déclarés dans cet ordre: `/{*}`, `/foo`, alors une URI `/foo` va match la première route.  
-Enfin, au lieu d'un pattern d'URI, le nombre `404` peut être passé comme argument à l'annotation, auquel cas la fonction sera appelée si aucune autre n'est sélectionné durant le dispatch.  
+Enfin, au lieu d'un pattern d'URI, le nombre `404` peut être passé comme argument à l'annotation, auquel cas la fonction sera appelée si aucune autre n'est sélectionnée durant le dispatch.  
 
 
 ## XML Templating
 
-PHOC supportes une forme de templating pseudo-XML incluant plusieurs tags XML.  
-Il s'agit de "pseudo-XML" par les faits qu'aucune déclaration XML est nécessaire et que le processeur est content quand manipulant des documents HTML.  
+PHOC supporte une forme de templating pseudo-XML incluant plusieurs tags XML.  
+Il s'agit de "pseudo-XML" par les faits qu'aucune déclaration XML soit nécessaire et que le processeur soit content quand manipulant des documents HTML.  
 Il est possible de compiler un fichier en HTML/PHP avec la fonction `\PHOC\Template::RenderFile(string): callable([array])`.  
 Le delegate retourné peut alors être appelé afin d'éxecuter le code PHP généré. Si un array lui est passé, ses indices seront extraits dans le scope local pour être utilisé par le template.  
 
 Ses tags spéciaux vivent dans le namespace XML `phoc`.  
-Parmis eux sont deux tags dédiés à output. Ils sont également acceptés à l'intérieur de strings, avec des accolades (curly brackets) au lieu d'équerres (angle brackets). 
-Dans le cas où ils sont à l'intérieur d'un string, alors les doubles guillemets doivent être changé pour des appostrophes.  
+Parmis eux sont deux tags dédiés à output. Ils sont également acceptés à l'intérieur de strings, avec des accolades (curly brackets) au lieu d'équerres (angle brackets).  
+Dans le cas où ils sont à l'intérieur d'un string, alors les doubles guillemets doivent être changés pour des appostrophes.  
 Ex: `<phoc:out var="$foo" />` et `<span class="{phoc:out var='$foo'}">...</span>`
 
-Toute expression PHP peut être passé aux tags de PHOC, tant qu'elles respectent le type attendu.  
+Toute expression PHP peut être passé aux tags de PHOC, tant qu'elle respecte le type attendu.  
 Le dialecte supporte également des commentaires avec une syntaxe non-orthodoxe: `<phoc:!-- commentaire ici --/>`.  
 Ils peuvent être exprimés avec la RegExp `/\<phoc:!--(.*)--\/?\>/sU` _(notez que le dernier `/` est optionel)_ et sont enlevés avant l'émission du code XML ou HTML produit.
 
@@ -182,7 +182,7 @@ namespace phoc
     };
     node `else` {};
     
-    //pour chaque valeur dans l'array passé à `each`, la variable passé à `as` est peuplée avec la valeur actuelle et le corps évalué.
+    //pour chaque valeur dans l'array passé à `each`, la variable passée à `as` est peuplée avec la valeur actuelle et le corps évalué.
     node `for`
     {
         array each;

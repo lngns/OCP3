@@ -9,7 +9,7 @@ It has been tested with Apache2, MySQL5 and PHP7 only.
 ## Control Flow
 
 Programs using PHOC, such as this blog, follow a conventional control flow revolving around metadata, namely, annotations.  
-PHOC projects configure their HTTP server to redirect all requests to a single `index.php` file, which starts the PHOC's runtime with the `\PHOC\Runtime::Start` function.  
+PHOC projects configure their HTTP server to redirect all requests to a single `index.php` file, which starts the PHOC's runtime with the `\PHOC\Runtime::Start(void)` function.  
 From here, the runtime first declares a standard autoloader, then autoload the so-called "entry class", as defined in the `configuration.xml` file.  
 Notably, the PHOC's autoloader has the additional role of automatically querying the loaded class' annotations.  
 
