@@ -53,7 +53,7 @@ By default, PHOC comes with the following pre-defined annotation classes:
 - **`\PHOC\ClassInit`** - static methods annotated this way are called during class initialization, and are intended to initialize static fields.  
 - **`\PHOC\Entry`** - defines the program's entry point.  
 - **`\PHOC\Route(string)`** - defines a route inside a web interface.  
-- **`\PHOC\SessionVar([string])`** - defines a session handle - an object used to access a `$_SESSION` member. The member can be specified through the argument, or is the field name by default.  
+- **`\PHOC\SessionVar([string])`** - initializes a session handle on a field - an object used to access a `$_SESSION` member. The member can be specified through the argument, or is the field name by default.  
 - **`\PHOC\UnitTest`** - static methods annotated this are called, but only in debug mode, and are intended to perform tests.  
 
 To be a valid annotation class, a class must be annotated `@PHOC\Annotation` with the desired entity types as arguments.  

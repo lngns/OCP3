@@ -157,7 +157,7 @@ Enfin, au lieu d'un pattern d'URI, le nombre `404` peut être passé comme argum
 ## XML Templating
 
 PHOC supporte une forme de templating pseudo-XML incluant plusieurs tags XML.  
-Il s'agit de "pseudo-XML" par les faits qu'aucune déclaration XML soit nécessaire et que le processeur soit content quand manipulant des documents HTML.  
+Il s'agit de "pseudo-XML" par les faits qu'aucune déclaration XML ne soit nécessaire et que le processeur soit content quand manipulant des documents HTML.  
 Il est possible de compiler un fichier en HTML/PHP avec la fonction `\PHOC\Template::RenderFile(string): callable([array])`.  
 Le delegate retourné peut alors être appelé afin d'éxecuter le code PHP généré. Si un array lui est passé, ses indices seront extraits dans le scope local pour être utilisé par le template.  
 
