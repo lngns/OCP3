@@ -159,11 +159,11 @@ Enfin, au lieu d'un pattern d'URI, le nombre `404` peut être passé comme argum
 PHOC supporte une forme de templating pseudo-XML incluant plusieurs tags XML.  
 Il s'agit de "pseudo-XML" par les faits qu'aucune déclaration XML ne soit nécessaire et que le processeur soit content quand manipulant des documents HTML.  
 Il est possible de compiler un fichier en HTML/PHP avec la fonction `\PHOC\Template::RenderFile(string): callable([array])`.  
-Le delegate retourné peut alors être appelé afin d'éxecuter le code PHP généré. Si un array lui est passé, ses indices seront extraits dans le scope local pour être utilisé par le template.  
+Le delegate retourné peut alors être appelé afin d'éxecuter le code PHP généré. Si un array lui est passé, ses indices seront extraits dans le scope local pour être utilisés par le template.  
 
 Ses tags spéciaux vivent dans le namespace XML `phoc`.  
 Parmis eux sont deux tags dédiés à output. Ils sont également acceptés à l'intérieur de strings, avec des accolades (curly brackets) au lieu d'équerres (angle brackets).  
-Dans le cas où ils sont à l'intérieur d'un string, alors les doubles guillemets doivent être changés pour des appostrophes.  
+Dans le cas où ils sont à l'intérieur d'un string, alors les doubles guillemets doivent être changés pour des apostrophes.  
 Ex: `<phoc:out var="$foo" />` et `<span class="{phoc:out var='$foo'}">...</span>`
 
 Toute expression PHP peut être passé aux tags de PHOC, tant qu'elle respecte le type attendu.  
