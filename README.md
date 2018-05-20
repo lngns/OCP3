@@ -9,7 +9,7 @@ It has been tested with Apache2, MySQL5 and PHP7 only.
 ## Control Flow
 
 Programs using PHOC, such as this blog, follow a conventional control flow revolving around metadata, namely, annotations.  
-PHOC projects configure their HTTP server to redirect all requests to a single `index.php` file, which starts the PHOC's runtime with the `\PHOC\Runtime::Start` function.  
+PHOC projects configure their HTTP server to redirect all requests to a single `index.php` file, which starts the PHOC's runtime with the `\PHOC\Runtime::Start(void)` function.  
 From here, the runtime first declares a standard autoloader, then autoload the so-called "entry class", as defined in the `configuration.xml` file.  
 Notably, the PHOC's autoloader has the additional role of automatically querying the loaded class' annotations.  
 
@@ -53,7 +53,7 @@ By default, PHOC comes with the following pre-defined annotation classes:
 - **`\PHOC\ClassInit`** - static methods annotated this way are called during class initialization, and are intended to initialize static fields.  
 - **`\PHOC\Entry`** - defines the program's entry point.  
 - **`\PHOC\Route(string)`** - defines a route inside a web interface.  
-- **`\PHOC\SessionVar([string])`** - defines a session handle - an object used to access a `$_SESSION` member. The member can be specified through the argument, or is the field name by default.  
+- **`\PHOC\SessionVar([string])`** - initializes a session handle on a field - an object used to access a `$_SESSION` member. The member can be specified through the argument, or is the field name by default.  
 - **`\PHOC\UnitTest`** - static methods annotated this are called, but only in debug mode, and are intended to perform tests.  
 
 To be a valid annotation class, a class must be annotated `@PHOC\Annotation` with the desired entity types as arguments.  
@@ -174,7 +174,7 @@ They can be expressed as the RegExp `/\<phoc:!--(.*)--\/?\>/sU` _(note the last 
 namespace phoc
 {
     //if the expression passed to `is` is true, then the body is evaluated.
-    //Otherwise, in the case a `phoc:else` tag is present in the body, the code following it is evaluated.
+    //otherwise, in the case a `phoc:else` tag is present in the body, the code following it is evaluated.
     node `if`
     {
         bool is;

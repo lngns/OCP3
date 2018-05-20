@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <configuration>
     <!--<?php die(); ?>-->
-    <base-url>/OC/P3</base-url>
+    <base-url></base-url>
     <logs-file>logs.txt</logs-file>
     <entry-class>\Blog\BlogMain</entry-class>
-    <resource-directory>Blog</resource-directory>
+    <resource-directory>public</resource-directory>
+    <template-directory>templates</template-directory>
     <default-sql-charset>utf8</default-sql-charset>
     <default-sql-port>3306</default-sql-port>
     <environment>

@@ -19,12 +19,15 @@ abstract class Configuration
             $configuration = Runtime::GetXmlConfiguration();
 
             $entryClass = (string) $configuration->{"entry-class"};
-            $resourceDirectory = (string) $configuration->{"resource-directory"};
+            $resourceDirectory = "../" . (string) $configuration->{"resource-directory"};
             $resourceDirectory = \str_replace(array("/", "\\"), DIRECTORY_SEPARATOR, $resourceDirectory);
+            $templateDirectory = "../" . (string) $configuration->{"template-directory"};
+            $templateDirectory = \str_replace(array("/", "\\"), DIRECTORY_SEPARATOR, $templateDirectory);
 
             $baseUrl = (string) $configuration->{"base-url"};
-            if($baseUrl[\strlen($baseUrl) - 1] === '/')
-                $baseUrl = \substr($baseUrl, 0, \strlen($baseUrl) - 1);
+            $len = \strlen($baseUrl);
+            if($len !== 0 && $baseUrl[$len - 1] === '/')
+                $baseUrl = \substr($baseUrl, 0, $len - 1);
 
             $databases = [];
             if(isset($configuration->sqlserver))
@@ -39,7 +42,8 @@ abstract class Configuration
                     $id = (string) $server["id"];
                     if(isset($server["conf"]))
                     {
-                        $server = \simplexml_load_file(\str_replace(["/", "\\"], DIRECTORY_SEPARATOR, $server["conf"]));
+                        $file = ".." . DIRECTORY_SEPARATOR . \str_replace(["/", "\\"], DIRECTORY_SEPARATOR, $server["conf"]);
+                        $server = \simplexml_load_file($file);
                         $server = $server->{"sqlserver"};
                     }
                     $port = isset($server->{"port"}) ? $server->{"port"} : $configuration->{"default-sql-port"};
@@ -69,6 +73,7 @@ abstract class Configuration
                 "LogsFile" => (string) $configuration->{"logs-file"},
                 "EntryClass" => $entryClass,
                 "ResourceDirectory" => $resourceDirectory,
+                "TemplateDirectory" => $templateDirectory,
                 "DefaultSqlCharset" => (string) $configuration->{"default-sql-charset"},
                 "DefaultSqlPort" => (string) $configuration->{"default-sql-port"},
                 "SqlServers" => $databases
