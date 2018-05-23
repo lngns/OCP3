@@ -34,7 +34,7 @@ final class Article
             $batch[] = new Article($row[0], NULL, $row[3], $row[1], $row[2], $row[4]);
         return $batch;
     }
-    static public function GetArticlesFromLast(int $start, int $count): array //Article[]
+    static public function GetArticlesFromId(int $start, int $count): array //Article[]
     {
         $stmt = BlogMain::GetSqlConnection()->prepare("
             SELECT id, title, abstract, date, last_update_date FROM articles
@@ -48,16 +48,41 @@ final class Article
             $batch[] = new Article($row[0], NULL, $row[3], $row[1], $row[2], $row[4]);
         return $batch;
     }
-    static public function GetFirstArticleId(): int
+    static public function GetArticleCount(): int
     {
-        return BlogMain::GetSqlConnection()->exec("SELECT MIN(id) FROM articles");
+        return BlogMain::GetSqlConnection()->query("SELECT COUNT(*) FROM articles")->fetch()["COUNT(*)"];
+    }
+    static public function GetNextId(int $id) //: int?
+    {
+        $stmt = BlogMain::GetSqlConnection()->prepare("SELECT id, title FROM articles WHERE id > ? LIMIT 1");
+        $stmt->bindParam(1, $id, \PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch();
+        if($row)
+            return $row;
+        return NULL;
+    }
+    static public function GetPreviousId(int $id) //: int?
+    {
+        $stmt = BlogMain::GetSqlConnection()->prepare("SELECT id, title FROM articles WHERE id < ? ORDER BY id DESC LIMIT 1");
+        $stmt->bindParam(1, $id, \PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch();
+        if($row)
+            return $row;
+        return NULL;
+    }
+    static public function GetLimits()
+    {
+        $res = BlogMain::GetSqlConnection()->query("SELECT MAX(id), MIN(id) FROM articles")->fetchAll()[0];
+        return ["Max" => (int) $res["MAX(id)"], "Min" => (int) $res["MIN(id)"]];
     }
     static public function ReadArticle(int $id): Article
     {
         $stmt = BlogMain::GetSqlConnection()->prepare(
             "SELECT id, title, body, date, last_update_date FROM articles WHERE id = ?"
         );
-        $stmt->bindParam(1, $id);
+        $stmt->bindParam(1, $id, \PDO::PARAM_INT);
         $stmt->execute();
         $row = $stmt->fetch(\PDO::FETCH_NUM);
         if($row === false)
@@ -66,10 +91,10 @@ final class Article
     }
     static public function WriteArticle(string $title, string $body)
     {
-        if(\strlen($body) < 251)
+        if(\strlen($body) < 751)
             $abstract = $body;
         else
-            $abstract = \preg_replace("/\s+?(\S+)?$/", "", substr($body, 0, 251));
+            $abstract = \preg_replace("/\s+?(\S+)?$/", "", substr($body, 0, 751));
         $stmt = BlogMain::GetSqlConnection()->prepare(
             "INSERT INTO articles (title, abstract, body, date) VALUES (?, ?, ?, NOW())"
         );
@@ -80,10 +105,10 @@ final class Article
     }
     static public function EditArticle(int $id, string $title, string $body)
     {
-        if(\strlen($body) < 251)
+        if(\strlen($body) < 751)
             $abstract = $body;
         else
-            $abstract = \preg_replace("/\s+?(\S+)?$/", "", substr($body, 0, 251));
+            $abstract = \preg_replace("/\s+?(\S+)?$/", "", substr($body, 0, 751));
         $stmt = BlogMain::GetSqlConnection()->prepare(
             "UPDATE articles SET title=?, abstract=?, body=?, last_update_date=NOW() WHERE id = ?"
         );

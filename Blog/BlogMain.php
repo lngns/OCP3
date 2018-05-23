@@ -61,12 +61,14 @@ class BlogMain
         if($i === 0)
             $articles = Article::GetLastArticles(5);
         else
-            $articles = Article::GetArticlesFromLast($i * 5, 5);
-        $first = Article::GetFirstArticleId();
+            $articles = Article::GetArticlesFromId($i * 5, 5);
+        $lastPage = (int) (Article::GetArticleCount() / 5);
         \PHOC\Template::RenderFile("archives.html")([
+            "PageName" => !$i ? "Acceuil" : "Archives",
+            "ACP" => false,
             "Articles" => $articles,
             "PageId" => $i,
-            "FirstId" => $first
+            "LastPageId" => $lastPage
         ]);
     }
     /** @PHOC\Route("/article/{*?}.{i}") */
@@ -74,13 +76,42 @@ class BlogMain
     {
         try
         {
+            $limits = Article::GetLimits();
             $article = Article::ReadArticle($id);
-            var_dump($article);
+            \PHOC\Template::RenderFile("article.html")([
+                "CurrentRequest" => $_SERVER["REQUEST_URI"],
+                "PageName" => $article->Title,
+                "Article" => $article,
+                "Limits" => $limits,
+                "ACP" => false
+            ]);
         }
         catch(\InvalidArgumentException $ex)
         {
             BlogMain::Error404();
         }
+    }
+    /** @PHOC\Route("/article/{*?}.{i}/next") */
+    static public function ArticleNext(int $id)
+    {
+        if($next = Article::GetNextId($id))
+        {
+            $title = \preg_replace("/\s/", "-", $next["title"]);
+            self::Redirect("/article/" . $title . "." . $next["id"]);
+        }
+        else
+            self::Error404();
+    }
+    /** @PHOC\Route("/article/{*?}.{i}/previous") */
+    static public function ArticlePrevious(int $id)
+    {
+        if($next = Article::GetPreviousId($id))
+        {
+            $title = \preg_replace("/\s/", "-", $next["title"]);
+            self::Redirect("/article/" . $title . "." . $next["id"]);
+        }
+        else
+            self::Error404();
     }
     /** @PHOC\Route("/admin/") */
     static public function Admin()

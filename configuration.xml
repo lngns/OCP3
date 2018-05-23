@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <configuration>
-    <!--<?php die(); ?>-->
     <base-url></base-url>
     <logs-file>logs.txt</logs-file>
     <entry-class>\Blog\BlogMain</entry-class>

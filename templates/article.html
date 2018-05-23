@@ -1,0 +1,27 @@
+<phoc:param name="Article" />
+<phoc:include file="header.html" />
+
+<phoc:if is="$Article->Id !== $Limits['Max']">
+    <a href="{phoc:out var='$CurrentRequest'}/next"><i class="fas fa-caret-left"></i></a>
+</phoc:if>
+<a href="{phoc:base-url}/"><i class="fas fa-home"></i></a>
+<phoc:if is="$Article->Id !== $Limits['Min']">
+    <a href="{phoc:out var='$CurrentRequest'}/previous"><i class="fas fa-caret-right"></i></a>
+</phoc:if>
+
+<hr />
+
+<h4><phoc:out var="$Article->Title" /></h4>
+<small><phoc:out var="$Article->Date" /></small>
+<p>
+    <phoc:out var="$Article->Body" />
+</p>
+
+<hr />
+
+<h6>Commentaires</h6>
+<phoc:for each="$Comments" as="$comment">
+
+</phoc:for>
+
+<phoc:include file="footer.html" />

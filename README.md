@@ -202,6 +202,12 @@ namespace phoc
         any __any;
     };
     
+    //asserts that the current compilation unit is supplied with a desired argument
+    node param
+    {
+        string name;
+    };
+    
     //outputs the result of the expression passed to `var`.
     node out
     {

@@ -1,3 +1,7 @@
+<phoc:param name="Articles" />
+<phoc:param name="PageId" />
+<phoc:param name="LastPageId" />
+
 <phoc:include file="header.html" />
 
 <phoc:for each="$Articles" as="$article">
@@ -11,20 +15,12 @@
         </h4>
         <small><phoc:out var="$article->Date" /></small>
         <p>
-            <phoc:out var="$article->Abstract" />... <a href="{phoc:base-url}/article/{phoc:out var='$url'}">Lire la suite</a>
+            <phoc:out var="$article->Abstract" />...<br />
+            <a type="button" href="{phoc:base-url}/article/{phoc:out var='$url'}" class="btn btn-primary btn-sm active">Lire la suite</a>
         </p>
     </div>
 </phoc:for>
 
-<phoc:if is="$PageId !== 0">
-    <a href="{phoc:base-url}/archives/{phoc:out var='$PageId-1'}">
-        Previous
-    </a>
-</phoc:if>
-<phoc:if is="\count($Articles) === 5 && $Articles[4]->Id !== $FirstId">
-    <a href="{phoc:base-url}/archives/{phoc:out var='$PageId+1'}">
-        Next
-    </a>
-</phoc:if>
+<phoc:include file="nav.html" />
 
 <phoc:include file="footer.html" />

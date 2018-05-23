@@ -1,0 +1,38 @@
+<phoc:param name="PageId" />
+<phoc:param name="LastPageId" />
+
+<div class="btn-group" role="group">
+    <phoc:if is="$PageId === 0">
+        <a type="button" href="{phoc:base-url}/" class="btn btn-outline-secondary disabled" aria-disabled="true" disabled>
+            |&lt;
+        </a>
+        <a type="button" href="{phoc:base-url}/" class="btn btn-outline-secondary disabled" aria-disabled="true" disabled>
+            &lt;
+        </a>
+    <phoc:else />
+        <a type="button" href="{phoc:base-url}/" class="btn btn-outline-secondary">
+            |&lt;
+        </a>
+        <a type="button" href="{phoc:base-url}/archives/{phoc:out var='$PageId-1'}" class="btn btn-outline-secondary">
+            &lt;
+        </a>
+    </phoc:if>
+    <button type="button" class="btn btn-outline-secondary disabled" aria-disabled="true">
+        ...
+    </button>
+    <phoc:if is="$PageId === $LastPageId">
+        <a type="button" href="{phoc:base-url}/" class="btn btn-outline-secondary disabled" aria-disabled="true" disabled>
+            &gt;
+        </a>
+        <a type="button" href="{phoc:base-url}/" class="btn btn-outline-secondary disabled" aria-disabled="true" disabled>
+            &gt;|
+        </a>
+    <phoc:else />
+        <a type="button" href="{phoc:base-url}/archives/{phoc:out var='$PageId+1'}" class="btn btn-outline-secondary">
+            &gt;
+        </a>
+        <a type="button" href="{phoc:base-url}/archives/{phoc:out var='$LastPageId'}" class="btn btn-outline-secondary">
+            &gt;|
+        </a>
+    </phoc:if>
+</div>
