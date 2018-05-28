@@ -27,6 +27,10 @@ abstract class Runtime
     {
         return self::$Configuration;
     }
+    static public function CurrentRequest(): string
+    {
+        return $_SERVER["REQUEST_URI"];
+    }
     /** @throws AnnotationException */
     static public function Autoload(string $classname)
     {

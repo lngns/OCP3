@@ -1,5 +1,14 @@
             <br />
             <br />
         </div>
+        <footer>
+            <div class="container" style="text-align: right;">
+                <phoc:if is="!\preg_match('/\/admin(?:\/[0-9]+)?$/', \PHOC\Runtime::CurrentRequest())">
+                    <a href="{phoc:base-url}/admin"><i class="fas fa-user"></i> Admin</a>
+                    <br />
+                    <br />
+                </phoc:if>
+            </div>
+        </footer>
     </body>
 </html>

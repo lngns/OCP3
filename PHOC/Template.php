@@ -13,7 +13,9 @@ abstract class Template
         "Pattern" => [
             "/\<phoc:!--(.*)--\/?\>/sU",
             "/\<phoc:if\s+is=\"(.*)\"\>(.*)\<phoc:else\s*\/?\>(.*)\<\/phoc:if\>/sU",
+            "/\<phoc:if\s+isset=\"(.*)\"\>(.*)\<phoc:else\s*\/?\>(.*)\<\/phoc:if\>/sU",
             "/\<phoc:if\s+is=\"(.*)\"\>(.*)\<\/phoc:if\>/sU",
+            "/\<phoc:if\s+isset=\"(.*)\"\>(.*)\<\/phoc:if\>/sU",
             "/\<phoc:for\s+each=\"(.*)\"\s+as=\"(.*)\"\>(.*)\<\/phoc:for\>/sU",
             "/\<phoc:include\s+file=\"(.*)\"\s*\/\>/sU",
             "/\<phoc:def\s+([a-zA-Z][a-zA-Z0-9_]*)=\"(.*)\"\s*\/\>/sU",
@@ -26,7 +28,9 @@ abstract class Template
         "Replace" => [
             "",
             "<?php if($1): ?>$2<?php else: ?>$3<?php endif; ?>",
+            "<?php if(isset($1)): ?>$2<?php else: ?>$3<?php endif; ?>",
             "<?php if($1): ?>$2<?php endif; ?>",
+            "<?php if(isset($1)): ?>$2<?php endif; ?>",
             "<?php foreach($1 as $2): ?>$3<?php endforeach; ?>",
             "<?php echo(\\PHOC\\Template::RenderFile(\"$1\")(\$__env)); ?>",
             "<?php \$$1 = $2; ?>",

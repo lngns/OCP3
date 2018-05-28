@@ -126,4 +126,9 @@ final class Article
         $stmt->bindParam(1, $id, \PDO::PARAM_INT);
         $stmt->execute();
     }
+    //Convenience Function
+    static public function GetLastReports(int $id): array //Report[]
+    {
+        return Report::GetLastReportsFrom($id);
+    }
 }

@@ -1,0 +1,21 @@
+<phoc:include file="header.html" />
+
+<phoc:if isset="$_GET['error']">
+    <div class="alert alert-danger" role="alert">
+        Mauvais utilisateur ou mot de passe.
+    </div>
+</phoc:if>
+
+<form method="post" action="{phoc:base-url}/_service/login">
+    <div class="form-group">
+        <label for="user-input">Utilisateur</label>
+        <input id="user-input" type="text" name="user" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label for="password-input">Mot de Passe</label>
+        <input id="password-input" type="password" name="password" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Connexion</button>
+</form>
+
+<phoc:include file="footer.html" />
