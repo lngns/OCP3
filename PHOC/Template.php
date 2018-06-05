@@ -56,9 +56,10 @@ abstract class Template
         if(!\file_exists($file))
             throw new IOException("File " . $file . " not found.");
         $__template = $file;
-        return function (array $__env = []) use ($__template) {
+        $contents = self::Compile(\file_get_contents($__template));
+        return function (array $__env = []) use ($__template, $contents) {
             //var_dump(self::Compile(\file_get_contents($__template)));
-            eval("extract(\$__env); ?> " . self::Compile(\file_get_contents($__template)) . " <?php ");
+            eval("unset(\$contents); extract(\$__env); ?> " . $contents . " <?php ");
         };
     }
 

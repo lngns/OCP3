@@ -5,6 +5,11 @@
         Mauvais utilisateur ou mot de passe.
     </div>
 </phoc:if>
+<phoc:if isset="$_GET['session']">
+    <div class="alert alert-warning" role="alert">
+        Votre session a expirée. Veuillez vous reconnecter.
+    </div>
+</phoc:if>
 
 <form method="post" action="{phoc:base-url}/_service/login">
     <div class="form-group">

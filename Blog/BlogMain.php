@@ -8,7 +8,7 @@
  */
 namespace Blog;
 
-class BlogMain
+abstract class BlogMain
 {
     /** @PHOC\SessionVar */
     static private $Admin;  //PHP doesn't allow non-constant expressions to initialize static fields
@@ -31,9 +31,12 @@ class BlogMain
         );
         self::$Connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
+        \header("X-Clacks-Overhead: GNU Terry Pratchett");
         \session_start();
         \PHOC\WebInterface::Dispatch(BlogMain::class);
-        self::$LastPage->Set($_SERVER["REQUEST_URI"]);
+        //The ?Ene flag is there when requests are made with AJAX
+        if(!isset($_GET["Ene"]) && !isset($_POST["Ene"]))
+            self::$LastPage->Set($_SERVER["REQUEST_URI"]);
     }
     static public function Redirect(string $url)
     {
@@ -143,10 +146,13 @@ class BlogMain
         if(self::$Admin->Get())
             self::AdminArchives(0);
         else
+        {
             \PHOC\Template::RenderFile("login.html")([
                 "ACP" => false,
-                "PageName" => "Login"
+                "PageName" => "Login",
+                "SessionExpired" => isset($_GET["session"])
             ]);
+        }
     }
     /** @PHOC\Route("/admin/{i}") */
     static public function AdminArchives(int $i)
@@ -155,25 +161,37 @@ class BlogMain
         if(!self::$Admin->Get())
             self::Redirect("/admin/");
         if($i === 0)
-            $articles = Article::GetLastArticles(5);
+            $articles = Article::GetLastArticles(12, true);
         else
-            $articles = Article::GetArticlesFromId($i * 5, 5);
-        $lastPage = (int) (Article::GetArticleCount() / 5);
+            $articles = Article::GetArticlesFromId($i * 12, 12, true);
+        if(isset($_GET["article"]))
+        {
+            try
+            {
+                $current = Article::ReadArticle((int) $_GET["article"]);
+            }
+            catch(\InvalidArgumentException $ex) {}
+        }
+        $lastPage = (int) (Article::GetArticleCount() / 12);
+        $reports = Report::GetAllReports();
+        var_dump($reports);
         \PHOC\Template::RenderFile("admin.html")([
             "PageName" => "ACP",
             "ACP" => true,
             "Articles" => $articles,
             "PageId" => $i,
-            "LastPageId" => $lastPage
+            "LastPageId" => $lastPage,
+            "Reports" => $reports,
+            "IsEditing" => isset($_GET["article"]),
+            "CurrentArticle" => isset($current) ? $current : NULL
         ]);
     }
     /** @PHOC\Route("/_service/{a}") */
     static public function Service(string $service)
     {
         \header("X-Robots-Tag: noindex,nofollow");
-        switch($service)
+        if($service === "comment")
         {
-        case "comment":
             if(!isset($_POST["article_id"], $_POST["author"], $_POST["email"], $_POST["message"]))
             {
                 BlogMain::Error400();
@@ -181,8 +199,10 @@ class BlogMain
             }
             Comment::WriteComment((int) $_POST["article_id"], $_POST["author"], $_POST["email"], $_POST["message"]);
             BlogMain::GoBack();
-            break;
-        case "report":
+            return;
+        }
+        if($service === "report")
+        {
             if(!isset($_GET["comment"]))
             {
                 BlogMain::Error400();
@@ -190,8 +210,10 @@ class BlogMain
             }
             Report::WriteReport((int) $_GET["comment"]);
             BlogMain::GoBack(); //ToTheFuture
-            break;
-        case "login":
+            return;
+        }
+        if($service === "login")
+        {
             if(self::$Admin->Get())
             {
                 BlogMain::Redirect("/admin");
@@ -217,64 +239,85 @@ class BlogMain
             {
                 BlogMain::Redirect("/admin?error");
             }
-            break;
-        case "logout":
+            return;
+        }
+        if($service === "logout")
+        {
             self::$Admin->Set(false);
             BlogMain::Redirect("/");
-            break;
+            return;
+        }
+
+        if(!self::$Admin->Get())
+        {
+            BlogMain::Error403();
+            return;
+        }
+        switch($service)
+        {
         case "write":
-            if(!self::$Admin->Get())
-            {
-                BlogMain::Error403();
-                return;
-            }
-            if(!isset($_POST["title"], $_POST["body"]))
+            if(!isset($_POST["button"], $_POST["title"], $_POST["body"]))
             {
                 BlogMain::Error400();
                 return;
             }
-            Article::WriteArticle($_POST["title"], $_POST["body"]);
+            if($_POST["button"] === "publish")
+                $publish = true;
+            else
+                $publish = false;
+            Article::WriteArticle($_POST["title"], $_POST["body"], $publish);
+            BlogMain::GoBack();
             break;
         case "edit":
-            if(!self::$Admin->Get())
-            {
-                BlogMain::Error403();
-                return;
-            }
             if(!isset($_POST["id"], $_POST["title"], $_POST["body"]))
             {
                 BlogMain::Error400();
                 return;
             }
-            Article::EditArticle($_POST["id"], $_POST["title"], $_POST["body"]);
+            Article::EditArticle((int) $_POST["id"], $_POST["title"], $_POST["body"]);
+            if(isset($_POST["redirect"]))
+                BlogMain::Redirect($_POST["redirect"]);
+            else
+                BlogMain::GoBack();
             break;
-        case "deleteArticle":
-            if(!self::$Admin->Get())
-            {
-                BlogMain::Error403();
-                return;
-            }
-            if(!isset($_GET["article"]))
+        case "publish":
+            if(!isset($_POST["article"]))
             {
                 BlogMain::Error400();
                 return;
             }
-            Article::DeleteArticle((int) $_GET["article"]);
-            BlogMain::GoBack();
+            Article::PublishArticle((int) $_POST["article"]);
+            //This URI is designed to be accessed via AJAX. The `Ene` flag is there to prevent further requests
+            if(!isset($_POST["Ene"]))
+                BlogMain::GoBack();
             break;
-        case "deleteComment":
-            if(!self::$Admin->Get())
+        case "unpublish":
+            if(!isset($_POST["article"]))
             {
-                BlogMain::Error403();
+                BlogMain::Error400();
                 return;
             }
+            Article::UnpublishArticle((int) $_POST["article"]);
+            if(!isset($_POST["Ene"]))
+                BlogMain::GoBack();
+            break;
+        case "deleteArticle":
+            if(!isset($_POST["article"]))
+            {
+                BlogMain::Error400();
+                return;
+            }
+            Article::DeleteArticle((int) $_POST["article"]);
+            if(!isset($_POST["Ene"]))
+                BlogMain::GoBack();
+            break;
+        case "deleteComment":
             if(!isset($_GET["comment"]))
             {
                 BlogMain::Error400();
                 return;
             }
             Report::DeleteReport((int) $_GET["comment"]);
-            //This URI is designed to be accessed via AJAX. The `Ene` flag is there to prevent further requests
             if(!isset($_GET["Ene"]))
                 BlogMain::GoBack();
             break;

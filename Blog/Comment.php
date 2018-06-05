@@ -7,7 +7,7 @@
  */
 namespace Blog;
 
-class Comment
+final class Comment
 {
     public $Id;
     public $ArticleId;

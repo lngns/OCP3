@@ -7,16 +7,21 @@
  */
 namespace Blog;
 
-class Report
+final class Report
 {
     public $Id;
     public $CommentId;
     public $Date;
     public $Reason;
-    private function __construct(int $id, int $comment, string $date, string $reason)
+
+    //not in SQL table
+    public $ArticleId;
+    public $ArticleTitle;
+    private function __construct(int $id, int $comment, string $date, string $reason, int $article = 0, string $title = NULL)
     {
         $this->Id = $id; $this->CommentId = $comment;
         $this->Date = $date; $this->Reason = $reason;
+        $this->ArticleId = $article; $this->ArticleTitle = $title;
     }
 
     //$reason is unused - I'll implement it maybe
@@ -31,7 +36,12 @@ class Report
     static public function ReadReport(int $id): Report
     {
         $stmt = BlogMain::GetSqlConnection()->prepare("
-            SELECT id, comment_id, date, reason FROM reports WHERE id = ?
+            SELECT reports.id, reports.comment_id, reports.date, reports.reason,
+              comments.author, comments.email, articles.id, articles.title
+            FROM (reports
+              INNER JOIN comments ON reports.comment_id = comments.id)
+            INNER JOIN articles ON comments.article_id = articles.id
+            WHERE reports.id = ?
         ");
         $stmt->bindParam(1, $id, \PDO::PARAM_INT);
         $stmt->execute();
@@ -43,7 +53,12 @@ class Report
     static public function GetAllReports(): array //Report[]
     {
         $query = BlogMain::GetSqlConnection()->query("
-            SELECT id, comment_id, date, reason FROM reports ORDER BY id DESC
+            SELECT reports.id, reports.comment_id, reports.date, reports.reason,
+              comments.author, comments.email, articles.id, articles.title
+            FROM (reports
+              INNER JOIN comments ON reports.comment_id = comments.id)
+            INNER JOIN articles ON comments.article_id = articles.id
+            ORDER BY reports.id DESC
         ");
         $batch = [];
         while($row = $query->fetch(\PDO::FETCH_NUM))
@@ -53,7 +68,13 @@ class Report
     static public function GetLastReportsFrom(int $commentId): array //Report[]
     {
         $stmt = BlogMain::GetSqlConnection()->prepare("
-            SELECT id, comment_id, date, reason FROM reports WHERE comment_id = ? ORDER BY id DESC
+            SELECT reports.id, reports.comment_id, reports.date, reports.reason,
+              comments.author, comments.email, articles.id, articles.title
+            FROM (reports
+              INNER JOIN comments ON reports.comment_id = comments.id)
+            INNER JOIN articles ON comments.article_id = articles.id
+            WHERE reports.comment_id = ?
+            ORDER BY reports.id DESC
         ");
         $stmt->bindParam(1, $commentId, \PDO::PARAM_INT);
         $stmt->execute();
