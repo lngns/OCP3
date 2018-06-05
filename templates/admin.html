@@ -4,6 +4,9 @@
 <phoc:param name="ACP" />
 
 <phoc:include file="header.html" />
+<a href="{phoc:base-url}/"><i class="fas fa-home"></i></a>
+<br />
+<br />
 
 <phoc:if is="$IsEditing">
     <phoc:param name="CurrentArticle" />
@@ -36,7 +39,7 @@
             <textarea id="body-input" name="body" form="article-form" class="form-control"></textarea>
         </div>
         <button type="submit" name="button" value="save" class="btn btn-primary">Sauvegarder</button>
-        <button type="submit" name="button" value="publish" class="btn btn-danger">Publier</button>
+        <button type="submit" name="button" value="publish" class="btn btn-success">Publier</button>
     </form>
 </phoc:if>
 
@@ -85,21 +88,21 @@
                 </tr>
             </thead>
             <tbody>
-                <phoc:for each="$Reports">
+                <phoc:for each="$Reports" as="$report">
                     <tr>
                         <td id="report-title-{phoc:out var='$report->Id'}">
                             <a href="{phoc:base-url}/article/*.{phoc:out var='$report->ArticleId'}"><phoc:out var="$report->ArticleTitle" /></a>
                         </td>
                         <td id="report-author-{phoc:out var='$report->Id'}">
-                            <phoc:out var="$report->Author" />
+                            <phoc:out var="$report->CommentAuthor" /> (<phoc:out var="$report->CommentEmail" />)
                         </td>
                         <td id="report-date-{phoc:out var='$report->Id'}">
                             <phoc:out var="$report->Date" />
                         </td>
                         <td  id="report-actions-{phoc:out var='$report->Id'}" style="text-align: right; color: white;">
-                            <phoc:def url="'/article/*.' . $report->ArticleId . '#' . $report->CommentId" />
+                            <phoc:def url="'article/*.' . $report->ArticleId . '#comment-' . $report->CommentId" />
                             <a type="button" class="btn btn-info" href="{phoc:base-url}/{phoc:out var='$url'}">Voir le commentaire</a>
-                            <button type="button" class="btn btn-danger" phoc:action="report-delete" phoc:value="$report->Id">Supprimer le commentaire</button>
+                            <button type="button" class="btn btn-danger" phoc:action="report-delete" phoc:value="{phoc:out var='$report->Id'}">Supprimer le commentaire</button>
                         </td>
                     </tr>
                 </phoc:for>

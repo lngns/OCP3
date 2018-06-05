@@ -66,7 +66,10 @@ abstract class BlogMain
     static public function Error404()
     {
         \header("HTTP/1.0 404 Page Not Found");
-        echo("Error 404. Page Not Found");
+        \PHOC\Template::RenderFile("404.html")([
+            "PageName" => "Error 404",
+            "ACP" => false
+        ]);
     }
     static public function Error400()
     {
@@ -174,7 +177,6 @@ abstract class BlogMain
         }
         $lastPage = (int) (Article::GetArticleCount() / 12);
         $reports = Report::GetAllReports();
-        var_dump($reports);
         \PHOC\Template::RenderFile("admin.html")([
             "PageName" => "ACP",
             "ACP" => true,
@@ -312,13 +314,13 @@ abstract class BlogMain
                 BlogMain::GoBack();
             break;
         case "deleteComment":
-            if(!isset($_GET["comment"]))
+            if(!isset($_POST["comment"]))
             {
                 BlogMain::Error400();
                 return;
             }
-            Report::DeleteReport((int) $_GET["comment"]);
-            if(!isset($_GET["Ene"]))
+            Report::DeleteReport((int) $_POST["comment"]);
+            if(!isset($_POST["Ene"]))
                 BlogMain::GoBack();
             break;
         default:

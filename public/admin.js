@@ -14,22 +14,30 @@ $(function () {
         });
     });
     $("button[phoc\\:action=edit-abort]").click(function () {
+        let notRebindedFunc = () => window.history.back();
         $(this).text("Toutes vos modifications seront perdues; êtes-vous sûr?");
         $(this).removeClass("btn-warning").addClass("btn-danger");
-        $(this).click(() => {
-            window.history.back();
-        });
+        $(this).click(notRebindedFunc);
+        setTimeout(() => {
+            $(this).off("click", notRebindedFunc);
+            $(this).removeClass("btn-danger").addClass("btn-warning");
+            $(this).text("Annuler");
+        }, 5000);
     });
     $("button[phoc\\:action=report-delete]").click(function () {
-        let id = $(this).attr("phoc:value");
-        $.post(PHOC.BaseUrl + "/_service/deleteComment", {
-            comment: id,
-            Ene: true
-        }).done(() => {
-            $("#report-title-" + id).html("Supprimé");
-            $("#report-author-" + id).html("-");
-            $("#report-date-" + id).html("-");
-            $("#report-actions-" + id).html("-");
+        $(this).text("Êtes vous sûr?");
+        $(this).click(() => {
+            let id = $(this).attr("phoc:value");
+            $.post(PHOC.BaseUrl + "/_service/deleteComment", {
+                comment: id,
+                Ene: true
+            }).done((data) => {
+                console.log(data);
+                $("#report-title-" + id).html("Supprimé");
+                $("#report-author-" + id).html("-");
+                $("#report-date-" + id).html("-");
+                $("#report-actions-" + id).html("-");
+            }).fail(quit);
         });
     });
     const publish = function () {
