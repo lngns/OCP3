@@ -154,7 +154,7 @@ Cela signifie que si deux processeurs sont déclarés dans cet ordre: `/{*}`, `/
 Enfin, au lieu d'un pattern d'URI, le nombre `404` peut être passé comme argument à l'annotation, auquel cas la fonction sera appelée si aucune autre n'est sélectionnée durant le dispatch.  
 
 
-## Modèles de Vue XML
+## Modèles de Vue / Templates XML
 
 PHOC supporte une forme de templating pseudo-XML incluant plusieurs tags XML.  
 Il s'agit de "pseudo-XML" par les faits qu'aucune déclaration XML ne soit nécessaire et que le processeur soit content quand manipulant des documents HTML.  
