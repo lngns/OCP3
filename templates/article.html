@@ -1,0 +1,55 @@
+<phoc:param name="Article" />
+<phoc:include file="header.html" />
+
+<phoc:if is="$Article->Id !== $Limits->Max">
+    <a href="{phoc:out var='$CurrentRequest'}/next"><i class="fas fa-caret-left"></i></a>
+</phoc:if>
+<a href="{phoc:base-url}/"><i class="fas fa-home"></i></a>
+<phoc:if is="$Article->Id !== $Limits->Min">
+    <a href="{phoc:out var='$CurrentRequest'}/previous"><i class="fas fa-caret-right"></i></a>
+</phoc:if>
+
+<hr />
+
+<h4><phoc:out var="$Article->Title" /></h4>
+<small><phoc:out var="$Article->Date" /></small>
+<p>
+    <phoc:out var="$Article->Body" />
+</p>
+
+<hr />
+
+<h6>Commentaires</h6>
+
+<form id="comment-form" method="post" action="{phoc:base-url}/_service/comment">
+    <input type="hidden" name="article_id" value="{phoc:out var='$Article->Id'}" />
+    <div class="form-group">
+        <label for="author-input"><strong>Nom</strong></label>:
+        <input id="author-input" type="text" name="author" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label for="email-input"><strong>Email</strong></label>:<br />
+        <!-- Does not support the full RFC, I know, but I ain't writing a parser in JS myself -->
+        <input id="email-input" type="email" name="email" class="form-control" placeholder="user@host.tld" required />
+    </div>
+    <div class="form-group">
+        <label for="message-input"><strong>Message</strong></label><br />
+        <textarea id="message-input" name="message" form="comment-form" class="form-control" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Poster</button>
+</form>
+
+<br />
+
+<phoc:for each="$Comments" as="$comment">
+    <div id="comment-{phoc:out var='$comment->Id'}">
+        <strong><phoc:out var="$comment->Author" /></strong> à <phoc:out var="$comment->Date" />
+        <a href="{phoc:base-url}/_service/report?comment={phoc:out var='$comment->Id'}"><i class="fas fa-flag"></i></a>
+        <br />
+        <p>
+            <phoc:out var="$comment->Message" />
+        </p>
+    </div>
+</phoc:for>
+
+<phoc:include file="footer.html" />

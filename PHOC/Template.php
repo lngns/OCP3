@@ -13,22 +13,30 @@ abstract class Template
         "Pattern" => [
             "/\<phoc:!--(.*)--\/?\>/sU",
             "/\<phoc:if\s+is=\"(.*)\"\>(.*)\<phoc:else\s*\/?\>(.*)\<\/phoc:if\>/sU",
+            "/\<phoc:if\s+isset=\"(.*)\"\>(.*)\<phoc:else\s*\/?\>(.*)\<\/phoc:if\>/sU",
             "/\<phoc:if\s+is=\"(.*)\"\>(.*)\<\/phoc:if\>/sU",
+            "/\<phoc:if\s+isset=\"(.*)\"\>(.*)\<\/phoc:if\>/sU",
             "/\<phoc:for\s+each=\"(.*)\"\s+as=\"(.*)\"\>(.*)\<\/phoc:for\>/sU",
             "/\<phoc:include\s+file=\"(.*)\"\s*\/\>/sU",
             "/\<phoc:def\s+([a-zA-Z][a-zA-Z0-9_]*)=\"(.*)\"\s*\/\>/sU",
             "/\<phoc:out\s+var=\"(.*)\"\s*\/\>/sU",
+            "/\<phoc:base-url\s*\/\>/sU",
+            "/\<phoc:param\s+name=\"([a-zA-Z][a-zA-Z0-9_]*)\"\s*\/\>/sU",
             "/\<(.*)=\"(.*)\{phoc:out\s+var='(.*)'\s*\/?\}(.*)\"(.*)\>/U",
             "/\<(.*)=\"(.*)\{phoc:base-url\s*\/?\}(.*)\"(.*)\>/U"
         ],
         "Replace" => [
             "",
             "<?php if($1): ?>$2<?php else: ?>$3<?php endif; ?>",
+            "<?php if(isset($1)): ?>$2<?php else: ?>$3<?php endif; ?>",
             "<?php if($1): ?>$2<?php endif; ?>",
+            "<?php if(isset($1)): ?>$2<?php endif; ?>",
             "<?php foreach($1 as $2): ?>$3<?php endforeach; ?>",
-            "<?php echo(\\PHOC\\Template::RenderFile(\"$1\")()); ?>",
+            "<?php echo(\\PHOC\\Template::RenderFile(\"$1\")(\$__env)); ?>",
             "<?php \$$1 = $2; ?>",
             "<?php echo($1); ?>",
+            "<?php echo(\PHOC\Configuration::BaseUrl()); ?>",
+            "<?php if(!isset(\$$1)) throw new \\BadFunctionCallException(\"Template \$__template is missing argument $1\"); ?>",
             "<$1=\"$2<?php echo($3); ?>$4\"$5>",
             "<$1=\"$2<?php echo(\PHOC\Configuration::BaseUrl()); ?>$3\"$4>"
         ]
@@ -47,9 +55,11 @@ abstract class Template
         $file = Configuration::TemplateDirectory() . $file;
         if(!\file_exists($file))
             throw new IOException("File " . $file . " not found.");
-        return function (array $env = []) use ($file) {
-            //var_dump(self::Compile(\file_get_contents($file)));
-            eval("extract(\$env); ?> " . self::Compile(\file_get_contents($file)) . " <?php ");
+        $__template = $file;
+        $contents = self::Compile(\file_get_contents($__template));
+        return function (array $__env = []) use ($__template, $contents) {
+            //var_dump(self::Compile(\file_get_contents($__template)));
+            eval("unset(\$contents); extract(\$__env); ?> " . $contents . " <?php ");
         };
     }
 

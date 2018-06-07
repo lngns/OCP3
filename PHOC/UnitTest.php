@@ -12,16 +12,13 @@ final class UnitTest
 {
     public function __construct(array $entity)
     {
-        if($entity["Type"] !== Annotations::T_CLASS && $entity["Type"] !== Annotations::T_FIELD)
+        if(Environment::Debug())
         {
-            if(Environment::Debug())
-            {
-                $parts = \explode("::", $entity["Symbol"]);
-                /** @noinspection PhpUnhandledExceptionInspection */
-                $method = new \ReflectionMethod($parts[0], $parts[1]);
-                $method->setAccessible(true);
-                $method->invoke(NULL);
-            }
+            $parts = \explode("::", $entity["Symbol"]);
+            /** @noinspection PhpUnhandledExceptionInspection */
+            $method = new \ReflectionMethod($parts[0], $parts[1]);
+            $method->setAccessible(true);
+            $method->invoke(NULL);
         }
     }
 

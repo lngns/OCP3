@@ -10,10 +10,10 @@ Le projet a été testé avec Apache2, MySQL5 et PHP7 seulement.
 
 Les programmes utilisant PHOC, tel que ce blog, suivent un flux de contrôle standard tournant autours de metadata, plus exactement, des annotations.  
 Les projets PHOC configurent leurs serveurs HTTP afin de rediriger toutes les requêtes sur un seul fichier `index.php`, qui démarre le runtime de PHOC avec la fonction `\PHOC\Runtime::Start(void)`.  
-Le runtime déclare d'abords un autoloader standard, puis autoload la dénommée "entry class" (ou "class d'entrée") tel que définie dans le fichier `configuration.xml`.  
-Notablement, l'autoloader de PHOC a le rôle additionel d'automatiquement récupérer les annotations des classes chargées.  
+Le runtime déclare d'abords un autoloader standard, puis charge la dénommée "class d'entrée" (ou "entry-class") tel que définie dans le fichier `configuration.xml`.  
+Notablement, l'autoloader de PHOC a le rôle additionel de récupérer automatiquement les annotations des classes chargées.  
 
-Les constructeurs d'annotations, par eux-mêmes, êxecutent du code, mais il est également possible pour les utilisateurs d'annoter des fonctions statiques `@PHOC\ClassInit`, auquel cas, de telles fonctions seront appelées pour initialiser leurs classes.  
+Les constructeurs d'annotations, par eux-mêmes, êxecutent du code, mais il est également possible pour les développeurs d'annoter des fonctions statiques `@PHOC\ClassInit`, auquel cas, de telles fonctions seront appelées pour initialiser leurs classes.  
 Car la déduction d'annotation est enclenchée par l'autoloader, il s'agit d'un processus non-déterministe.  
 Dans la classe d'entrée doit être définie une fonction statique annotée `@PHOC\Entry`. Seulement un point d'entré est autorisé par programme.  
 La fonction est appelé par le runtime, stoppant ainsi son rôle d'initialisation.  
@@ -102,16 +102,16 @@ abstract class MyProgram
 
 Les interfaces web de PHOC sont de simples classes contenant des processeurs de route.  
 Les classes ne sont pas elles-mêmes reconnues d'une manière spéciale, mais les controlleurs doivent être annotés `@PHOC\Route`.  
-Le constructeur de `\PHOC\Route` accepte un seul string argument: un pattern d'URI.  
-Les patterns d'URI peuvent contenir plusieurs placeholders, qui sont passés à leurs controlleurs avec les valeurs acquises quand une requête est dispatched.  
-Les placeholders disponibles sont:  
+Le constructeur de `\PHOC\Route` accepte un seul argument: un modèle d'URI.  
+Les patterns d'URI peuvent contenir plusieurs textes de substitions, qui sont passés à leurs controlleurs avec les valeurs acquises quand une requête est dispatched.  
+Les textes de substitions disponibles sont:  
 - **`{i}`** - nombre entier décimal.
 - **`{a}`** - string alphanumerique (RegExp `[a-zA-Z0-9_]+`).
 - **`{*}`** - wildcard.
 
 Ex:  
 `/user/{i}` va match l'URI `/user/42` et passera 42 au controlleur.  
-`/node/{a}/static/{*}` va match l'URI `/node/october/static/surprised-seal.gif` et passera 42 et `surprised-seal.gif` au controlleur.
+`/node/{a}/static/{*}` va match l'URI `/node/october/static/surprised-seal.gif` et passera `october` et `surprised-seal.gif` au controlleur.
 
 De telles routes peuvent être implémentées de cette façon:
 ```php
@@ -131,7 +131,7 @@ class MyWebInterface
 }
 ```
 
-Quand une URI variable est désirée sans d'actuel paramètre, il est possible d'ajouter un charactère `?` après le symbole du placeholder.  
+Quand une URI variable est désirée sans d'actuel paramètre, il est possible d'ajouter un charactère `?` après le symbole du textes de substitions.  
 Ex:
 ```php
 class MyOtherWebInterface
@@ -154,7 +154,7 @@ Cela signifie que si deux processeurs sont déclarés dans cet ordre: `/{*}`, `/
 Enfin, au lieu d'un pattern d'URI, le nombre `404` peut être passé comme argument à l'annotation, auquel cas la fonction sera appelée si aucune autre n'est sélectionnée durant le dispatch.  
 
 
-## XML Templating
+## Modèles de Vue / Templates XML
 
 PHOC supporte une forme de templating pseudo-XML incluant plusieurs tags XML.  
 Il s'agit de "pseudo-XML" par les faits qu'aucune déclaration XML ne soit nécessaire et que le processeur soit content quand manipulant des documents HTML.  
@@ -200,6 +200,12 @@ namespace phoc
     node def
     {
         any __any;
+    };
+    
+    //asserts que l'unité de compilation actuelle a été fournis avec un argument désiré
+    node param
+    {
+        string name;
     };
     
     //outputs le résultat de l'expression passée à `var`.

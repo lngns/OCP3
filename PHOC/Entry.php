@@ -12,23 +12,13 @@ final class Entry
 {
     public function __construct(array $entity)
     {
-        if($entity["Type"] === Annotations::T_CLASS)
-            $func = [$entity["Symbol"], "Main"];
-        if($entity["Type"] === Annotations::T_METHOD || isset($func))
+        if($entity["Type"] === Annotations::T_METHOD)
         {
-            if(isset($func))
-                $entry = $func;
-            else
-                $entry = \explode("::", $entity["Symbol"]);
-            if(\class_exists($entry[0]) && \method_exists($entry[0], $entry[1]))
-            {
-                /** @noinspection PhpUnhandledExceptionInspection -- Symbol existence already checked. */
-                $method = new \ReflectionMethod($entry[0], $entry[1]);
-                if(!$method->isPublic() || !$method->isStatic())
-                    throw new \UnexpectedValueException("Entry Point must be a function or a class having a Main method.");
-            }
-            else
-                throw new \UnexpectedValueException("Entry Point must be a function or a class having a Main method.");
+            $entry = \explode("::", $entity["Symbol"]);
+            /** @noinspection PhpUnhandledExceptionInspection -- Symbol existence already checked. */
+            $method = new \ReflectionMethod($entry[0], $entry[1]);
+            if(!$method->isPublic() || !$method->isStatic())
+                throw new \UnexpectedValueException("Entry Point must be a static public function.");
         }
         else
             $entry = $entity["Symbol"];
