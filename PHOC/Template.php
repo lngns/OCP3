@@ -18,7 +18,7 @@ abstract class Template
             "/\<phoc:if\s+isset=\"(.*)\"\>(.*)\<\/phoc:if\>/sU",
             "/\<phoc:for\s+each=\"(.*)\"\s+as=\"(.*)\"\>(.*)\<\/phoc:for\>/sU",
             "/\<phoc:include\s+file=\"(.*)\"\s*\/\>/sU",
-            "/\<phoc:def\s+([a-zA-Z][a-zA-Z0-9_]*)=\"(.*)\"\s*\/\>/sU",
+            "/\<phoc:def\s+([a-zA-Z_][a-zA-Z0-9_]*)=\"(.*)\"\s*\/\>/sU",
             "/\<phoc:out\s+var=\"(.*)\"\s*\/\>/sU",
             "/\<phoc:base-url\s*\/\>/sU",
             "/\<phoc:param\s+name=\"([a-zA-Z][a-zA-Z0-9_]*)\"\s*\/\>/sU",

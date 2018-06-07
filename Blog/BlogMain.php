@@ -279,7 +279,7 @@ abstract class BlogMain
             Article::EditArticle((int) $_POST["id"], $_POST["title"], $_POST["body"]);
             if(isset($_POST["redirect"]))
                 BlogMain::Redirect($_POST["redirect"]);
-            else
+            else if(!isset($_POST["Ene"]))
                 BlogMain::GoBack();
             break;
         case "publish":

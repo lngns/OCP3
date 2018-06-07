@@ -1,4 +1,5 @@
 <phoc:param name="Articles" />
+<phoc:param name="Reports" />
 <phoc:param name="PageId" />
 <phoc:param name="LastPageId" />
 <phoc:param name="ACP" />
@@ -15,7 +16,7 @@
         <input type="hidden" name="id" value="{phoc:out var='$CurrentArticle->Id'}" />
         <input type="hidden" name="redirect" value="/admin" />
         <div class="form-group">
-            <label for="title-input">Titre</label>
+            <label for="title-input"><strong>Titre</strong></label>
             <input id="title-input" type="text" name="title" class="form-control" value="{phoc:out var='$CurrentArticle->Title'}" required />
         </div>
         <div class="form-group">
@@ -29,7 +30,7 @@
     </form>
 <phoc:else />
     <h3>Ecrire un Nouvel Article</h3>
-    <form id="article-form" method="post" action="{phoc:base-url}/_service/write">
+    <form id="article-form" method="post" action="{phoc:base-url}/_service/write" phoc:action="article-write">
         <div class="form-group">
             <label for="title-input">Titre</label>
             <input id="title-input" type="text" name="title" class="form-control" required />

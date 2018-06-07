@@ -31,8 +31,7 @@ $(function () {
             $.post(PHOC.BaseUrl + "/_service/deleteComment", {
                 comment: id,
                 Ene: true
-            }).done((data) => {
-                console.log(data);
+            }).done(() => {
                 $("#report-title-" + id).html("Supprimé");
                 $("#report-author-" + id).html("-");
                 $("#report-date-" + id).html("-");
@@ -40,6 +39,9 @@ $(function () {
             }).fail(quit);
         });
     });
+    /*$("button[phoc\\:action=article-write]").click(function () {
+
+    });*/
     const publish = function () {
         $.post(PHOC.BaseUrl + "/_service/publish", {
             article: $(this).attr("phoc:val"),
