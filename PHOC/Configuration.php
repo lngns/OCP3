@@ -24,6 +24,11 @@ abstract class Configuration
             $templateDirectory = "../" . (string) $configuration->{"template-directory"};
             $templateDirectory = \str_replace(array("/", "\\"), DIRECTORY_SEPARATOR, $templateDirectory);
 
+            if(isset($configuration->{"error-handler-template"}))
+                $errorHandler = (string) $configuration->{"error-handler-template"};
+            else
+                $errorHandler = "../PHOC/error_handler.xml";
+
             $baseUrl = (string) $configuration->{"base-url"};
             $len = \strlen($baseUrl);
             if($len !== 0 && $baseUrl[$len - 1] === '/')
@@ -72,6 +77,7 @@ abstract class Configuration
                 "BaseUrl" => $baseUrl,
                 "LogsFile" => (string) $configuration->{"logs-file"},
                 "EntryClass" => $entryClass,
+                "ErrorHandlerTemplate" => $errorHandler,
                 "ResourceDirectory" => $resourceDirectory,
                 "TemplateDirectory" => $templateDirectory,
                 "DefaultSqlCharset" => (string) $configuration->{"default-sql-charset"},

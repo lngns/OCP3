@@ -50,7 +50,7 @@ abstract class Runtime
             Annotations::GetAnnotations($classname, Annotations::T_CLASS);
         }
     }
-    /** @throws AnnotationException */
+
     static public function Start()
     {
         \error_reporting(E_ALL);
@@ -60,6 +60,7 @@ abstract class Runtime
         $configuration = \simplexml_load_file(".." . DIRECTORY_SEPARATOR . "configuration.xml");
         self::$Configuration = $configuration;
 
+        /** @noinspection PhpUnhandledExceptionInspection -- no AnnotationExceptions are thrown by the framework itself */
         self::Autoload(Configuration::EntryClass());
 
         if(!self::$EntryPoint)
@@ -72,6 +73,36 @@ abstract class Runtime
             \parse_str($_SERVER["QUERY_STRING"], $_argv);
         $_argc = \count($_argv);
         $_argv[$_argc] = NULL; //argv[argc] is NULL as per POSIX
-        \call_user_func(self::$EntryPoint, $_argc, $_argv, Environment::__GetEnvironment());
+
+        try
+        {
+            \call_user_func(self::$EntryPoint, $_argc, $_argv, Environment::__GetEnvironment());
+        }
+        catch(\Throwable $ex)
+        {
+            try
+            {
+                Template::ResetBuffer();
+                \header("HTTP/1.0 500 Internal Server Error");
+                if(Environment::Debug())
+                {
+                    Template::RenderFile(Configuration::ErrorHandlerTemplate())([
+                        "File" => $ex->getFile(),
+                        "Line" => $ex->getLine(),
+                        "Class" => get_class($ex),
+                        "Message" => $ex->getMessage(),
+                        "StackTrace" => $ex->getTrace()
+                    ]);
+                }
+                else
+                    echo("500. Internal Server Error");
+            }
+            catch(\Throwable $ex)
+            {
+                Template::ResetBuffer();
+                //var_dump($ex);
+                die("The program has encountered a serious error.");
+            }
+        }
     }
 }

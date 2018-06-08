@@ -21,7 +21,7 @@ abstract class Environment
                 self::$Environment[(string) $value["name"]] = (string) $value;
         }
     }
-    static public function __callStatic($name, $arguments): string
+    static public function __callStatic($name, $arguments) //: string?
     {
         if(isset(self::$Environment[$name]))
             return self::$Environment[$name];

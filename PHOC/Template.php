@@ -21,7 +21,7 @@ abstract class Template
             "/\<phoc:def\s+([a-zA-Z_][a-zA-Z0-9_]*)=\"(.*)\"\s*\/\>/sU",
             "/\<phoc:out\s+var=\"(.*)\"\s*\/\>/sU",
             "/\<phoc:base-url\s*\/\>/sU",
-            "/\<phoc:param\s+name=\"([a-zA-Z][a-zA-Z0-9_]*)\"\s*\/\>/sU",
+            "/\<phoc:param\s+name=\"([a-zA-Z_][a-zA-Z0-9_]*)\"\s*\/\>/sU",
             "/\<(.*)=\"(.*)\{phoc:out\s+var='(.*)'\s*\/?\}(.*)\"(.*)\>/U",
             "/\<(.*)=\"(.*)\{phoc:base-url\s*\/?\}(.*)\"(.*)\>/U"
         ],
@@ -55,12 +55,23 @@ abstract class Template
         $file = Configuration::TemplateDirectory() . $file;
         if(!\file_exists($file))
             throw new IOException("File " . $file . " not found.");
-        $__template = $file;
+        $__template = \realpath($file);
         $contents = self::Compile(\file_get_contents($__template));
         return function (array $__env = []) use ($__template, $contents) {
-            //var_dump(self::Compile(\file_get_contents($__template)));
+            if(\ob_get_level() <= 1)
+            {
+                \ob_start();
+                $ob_flag = 1;
+            }
             eval("unset(\$contents); extract(\$__env); ?> " . $contents . " <?php ");
+            if(isset($ob_flag))
+                \ob_end_flush();
         };
+    }
+    static public function ResetBuffer()
+    {
+        while(\ob_get_level() > 0)
+            \ob_end_clean();
     }
 
     /** @UnitTest */
