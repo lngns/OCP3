@@ -252,3 +252,10 @@ Ex:
 
 <phoc:include file="footer.html" />
 ```
+
+In one template's evaluation is guaranteed to exist these two variables:  
+- **`$__env`** - map containing the arguments passed to the template. One should not write to it as it is implicitly passed to included templates.  
+- **`$__template`** - string containing the file name of the current template. It is different in each template context, so writing to it does not affect included templates.  
+
+When the `<phoc:include />` tag is used, `$__env` is passed to it, meaning all passed parameters are shared among all the templates of the current compilation unit.  
+`$__env` indices are simply extracted with the `extract(array)` function. It is then up to the user to not alter it. Changing it to a non-array before including another file will result in a crash.  
